@@ -20,6 +20,10 @@ import PageProgressBar from "@/components/PageProgressBar";
 import { LibraryTypeCompatibilityGuard } from "@/components/LibraryTypeCompatibilityGuard";
 import { seriesIdFromShelfId } from "@/lib/series-id";
 import { getBasePath } from "@/lib/base-path";
+// s-library: Z-Library 全局任务中心抽屉（任意页面可达，UI-DESIGN §2.2）
+import TaskCenterDrawer from "@/components/zlibrary/TaskCenterDrawer";
+import ForbiddenPage from "@/components/ForbiddenPage";
+import { useZLibraryStatus } from "@/hooks/useZLibraryStatus";
 
 // Pages — imported directly from original Next.js pages
 // The "use client" directive is harmless in Vite
@@ -42,6 +46,8 @@ const DataQA = React.lazy(() => import("@/app/data-qa/page"));
 const FileStats = React.lazy(() => import("@/app/file-stats/page"));
 const History = React.lazy(() => import("@/app/history/page"));
 const BookFlipDevPage = React.lazy(() => import("@/app/dev/book-flip/page"));
+// s-library: Z-Library 搜索页（lazy import，UI-DESIGN §9.1）
+const ZLibraryPage = React.lazy(() => import("@/app/zlibrary/page"));
 
 /** 动态设置浏览器标签页标题 */
 function SiteTitle() {
@@ -68,6 +74,27 @@ function ComicDetailRoute() {
     return <Navigate to={`/series/${seriesId}`} replace />;
   }
   return <ComicDetail />;
+}
+
+// s-library: Z-Library 路由守卫（UI-DESIGN §2.2）：admin 恒通过；
+// 普通用户由 /api/zlibrary/status 的 200/403（canUse）决定，未授权渲染 ForbiddenPage
+function ZLibraryRoute() {
+  const { user } = useAuth();
+  const { status, loading, forbidden, error } = useZLibraryStatus();
+  const isAdmin = user?.role === "admin";
+  if (isAdmin) return <ZLibraryPage />;
+  if (loading && !status && !error) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-border border-b-accent" />
+      </div>
+    );
+  }
+  if (forbidden || (!status && !error)) {
+    return <ForbiddenPage />;
+  }
+  // 状态请求网络失败时降级放行，页面内部仍有未连接/错误横幅兜底
+  return <ZLibraryPage />;
 }
 
 /**
@@ -117,6 +144,8 @@ function AppRoutes() {
         <Route path="books" element={<BooksPage />} />
         <Route path="favorites" element={<BooksPage favoritesView />} />
         <Route path="recommendations" element={<Recommendations />} />
+        {/* s-library: Z-Library 搜索页路由（插在「推荐」后，UI-DESIGN §2.1） */}
+        <Route path="zlibrary" element={<ZLibraryRoute />} />
         <Route path="stats" element={<Stats />} />
         <Route path="logs" element={<AdminRoute><Logs /></AdminRoute>} />
         <Route path="settings" element={<Settings />} />
@@ -155,6 +184,8 @@ function App() {
                   <PageProgressBar />
                   <AppRoutes />
                   <MobileBottomNav />
+                  {/* s-library: Z-Library 任务中心全局抽屉（AppShell 层挂载，UI-DESIGN §3.3） */}
+                  <TaskCenterDrawer />
                 </AuthGuard>
               </ToastProvider>
             </AuthProvider>

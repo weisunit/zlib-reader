@@ -56,4 +56,5 @@ func SetupRoutes(r *gin.Engine) {
 	registerMetadataRoutes(api)
 	registerLibraryRoutes(api)
 	registerUserGroupRoutes(api)
+	registerZlibraryRoutes(api) // s-library: Z-Library 搜索与一键入库路由组（docs/ARCHITECTURE.md §8-2）
 }

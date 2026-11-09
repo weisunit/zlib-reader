@@ -32,7 +32,7 @@ interface SiteConfig {
 }
 
 const DEFAULT_CONFIG: SiteConfig = {
-  siteName: "NowenReader",
+  siteName: "ZlibReader",
   siteIcon: "",
   thumbnailWidth: 400,
   thumbnailHeight: 560,

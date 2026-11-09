@@ -457,7 +457,7 @@ func GetSiteName() string {
 	if n := loadSiteConfig().SiteName; n != "" {
 		return n
 	}
-	return "NowenReader"
+	return "ZlibReader" // s-library: 项目更名 ZlibReader（原 NowenReader）
 }
 
 // GetSiteIcon 返回自定义站点图标路径，为空则使用默认图标。

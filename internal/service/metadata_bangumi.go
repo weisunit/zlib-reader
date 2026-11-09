@@ -30,7 +30,7 @@ func searchBangumiWithType(query, lang string, bangumiType int, sourceName strin
 		bangumiAPI, url.PathEscape(query), bangumiType)
 
 	resp, err := httpGet(u, map[string]string{
-		"User-Agent": "NowenReader/1.0",
+		"User-Agent": "ZlibReader/1.0",
 		"Accept":     "application/json",
 	}, 15*time.Second)
 	if err != nil {
@@ -175,7 +175,7 @@ func searchBangumiWithType(query, lang string, bangumiType int, sourceName strin
 func fetchBangumiSubjectDetail(subjectID int) (author, publisher, language string) {
 	u := fmt.Sprintf("%s/v0/subjects/%d", bangumiAPI, subjectID)
 	resp, err := httpGet(u, map[string]string{
-		"User-Agent": "NowenReader/1.0",
+		"User-Agent": "ZlibReader/1.0",
 		"Accept":     "application/json",
 	}, 10*time.Second)
 	if err != nil {

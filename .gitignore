@@ -39,6 +39,10 @@ dbcheck
 migrate
 # Comics and local books (user data)
 comics/
+
+# s-library: docker-compose 默认挂载目录（一键部署产生，属用户数据）
+novels/
+cache/
 /*.epub
 
 # Frontend build output (embedded via go:embed)
@@ -82,3 +86,7 @@ coverage.out
 *.log
 git-tmp*.txt
 run-log.txt
+.mimosa/
+
+# s-library: 本机个人 compose 覆盖（代理等），不进入公开仓库
+docker-compose.override.yml

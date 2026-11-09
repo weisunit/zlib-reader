@@ -118,8 +118,8 @@ func TestDefaults(t *testing.T) {
 	if GetPageSize() != 24 {
 		t.Errorf("Default PageSize should be 24, got %d", GetPageSize())
 	}
-	if GetSiteName() != "NowenReader" {
-		t.Errorf("Default SiteName should be 'NowenReader', got '%s'", GetSiteName())
+	if GetSiteName() != "ZlibReader" { // s-library: 更名
+		t.Errorf("Default SiteName should be 'ZlibReader', got '%s'", GetSiteName())
 	}
 }
 

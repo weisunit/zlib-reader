@@ -1367,6 +1367,211 @@ autoDetect: "智能合集",
     confirmBatchDeleteCats: "确认删除选中的",
     batchDeleteCatsWarning: "此操作将从所有漫画中移除这些分类。",
   },
+
+  // s-library: 新增命名空间 — Z-Library 集成（词条来源 docs/UI-DESIGN.md §6，共 135 条 + 3 条书库类型辅助词条）
+  zlibrary: {
+    navLabel: "Z-Library",
+    libraryNotCompatible: "不支持 {ext}",
+    tasksNavLabel: "下载任务",
+    searchTitle: "Z-Library 搜索",
+    searchDescription: "搜书并一键入库到本地书库",
+    searchPlaceholder: "搜索书名、作者、关键词…",
+    searchButton: "搜索",
+    searching: "搜索中…",
+    quotaRemaining: "今日剩余",
+    quotaExhaustedShort: "额度已用完",
+    filter: {
+      language: "语言",
+      format: "格式",
+      sort: "排序",
+      yearFrom: "出版年起",
+      yearTo: "出版年止",
+      more: "更多筛选",
+      less: "收起筛选",
+      clear: "清除筛选",
+    },
+    sort: {
+      bestmatch: "最佳匹配",
+      newest: "最新",
+      popular: "最受欢迎",
+    },
+    view: {
+      grid: "网格",
+      list: "列表",
+    },
+    results: {
+      loadMore: "加载更多",
+      noMore: "没有更多了",
+      count: "共 {n} 项",
+    },
+    status: {
+      notImported: "未入库",
+      imported: "已入库",
+      queued: "队列中",
+      viewLocal: "查看本地",
+    },
+    history: {
+      title: "搜索历史",
+      clear: "清空历史",
+    },
+    empty: {
+      searchReady: "输入关键词开始搜索",
+      noResults: "未找到匹配结果",
+      tryDifferent: "试试其他关键词",
+    },
+    error: {
+      authRequired: "Z-Library 未连接，请在设置中登录",
+      authFailed: "登录失败：邮箱或密码错误",
+      quotaExceeded: "今日下载额度已用完（{x}/{y}），将于每日 {time} 重置",
+      sizeLimit: "该文件超过当前账号的大小上限",
+      domainUnreachable: "所有 Z-Library 域名均无法访问，可尝试邮件获取新域名",
+      blocked: "访问被拦截，请在浏览器打开 {domain} 完成验证，或稍后重试",
+      notFound: "该书在 Z-Library 已不可用",
+      extMismatch: "{ext} 无法加入{libraryType}",
+      diskFull: "目标书库所在磁盘空间不足",
+      dupImported: "已入库，点击查看",
+      dupQueued: "已在下载队列中",
+      scanFailed: "文件已下载但入库失败，请手动扫描或查看日志",
+      timeout: "请求超时，请重试",
+      quotaConsumed: "已消耗今日配额，次日恢复后可重试",
+      // s-library: DEF-2 补齐后端扩展码文案（internal/zlibrary/models.go 全集，含并行新增的 Z_INVALID_STATE）
+      libNotFound: "目标书库不存在或已被删除，请重新选择书库",
+      rateLimited: "Z-Library 请求过于频繁，请稍后再试",
+      upstream: "Z-Library 服务暂时不可用，请稍后重试",
+      forbidden: "你当前没有使用 Z-Library 的权限，请联系管理员",
+      interrupted: "服务重启导致下载中断，可重试继续",
+      invalidState: "任务状态已变化，该操作不可用，请刷新后重试",
+    },
+    action: {
+      goSettings: "去设置",
+      retry: "重试",
+      retryTomorrow: "次日可重试",
+      cancel: "取消",
+      removeRecord: "删除记录",
+      scanNow: "手动扫描",
+    },
+    detail: {
+      title: "书籍详情",
+      author: "作者",
+      publisher: "出版社",
+      year: "年份",
+      language: "语言",
+      format: "格式",
+      size: "大小",
+      rating: "评分",
+      description: "简介",
+      expandDesc: "展开全部",
+      collapseDesc: "收起",
+      formatSelector: "选择格式",
+      noFormatSelected: "请选择要下载的格式",
+      noCompatibleLibrary: "没有兼容 {ext} 的书库，请先在「书库管理」创建对应类型（小说/混合）的书库",
+      librarySelector: "目标书库",
+      import: "入库",
+      importQueued: "已加入任务队列",
+      imported: "已入库",
+      viewTask: "查看任务",
+      notConnectedHint: "未连接，请先在设置中登录",
+      quotaHint: "今日额度已用完",
+    },
+    tasks: {
+      title: "下载任务",
+      activeCount: "{n} 个进行中",
+      emptyTitle: "暂无下载任务",
+      emptyHint: "去 Z-Library 搜一本书试试",
+      clearHistory: "清空历史",
+      by: "发起人",
+      stage: {
+        fetchInfo: "获取详情",
+        downloading: "下载中",
+        validating: "校验中",
+        moving: "落盘中",
+        scanning: "扫描中",
+      },
+      status: {
+        queued: "排队中",
+        completed: "已完成",
+        failed: "失败",
+        canceled: "已取消",
+      },
+      viewBook: "查看书籍",
+      importedToast: "《{title}》已入库",
+    },
+    settings: {
+      tabLabel: "Z-Library",
+      section: {
+        connection: "连接",
+        domain: "域名",
+        download: "下载行为",
+        permission: "权限",
+        fallback: "兜底指引",
+      },
+      status: {
+        connected: "已连接",
+        disconnected: "已断开",
+        notConfigured: "未配置",
+      },
+      credential: {
+        email: "邮箱",
+        password: "密码",
+        passwordHint: "仅用于登录换取令牌，用后即弃、不落盘",
+        encrypted: "凭据已加密保存",
+        modePassword: "邮箱 + 密码",
+        modeToken: "remix 令牌",
+        remixUserId: "remix_userid",
+        remixUserKey: "remix_userkey",
+        tokenHint: "打开 Z-Library 站点 → 浏览器开发者工具 → Application → Cookies 复制",
+      },
+      action: {
+        testConnection: "测试连接",
+        testing: "测试中…",
+        unbind: "解绑",
+        // s-library: 辅助词条（设计文档表格外补充，线框图中的 [保存凭据] 按钮）
+        saveCredentials: "保存凭据",
+      },
+      unbindConfirm: "确认解绑 Z-Library 账号？进行中的任务将失败",
+      accountType: {
+        free: "免费",
+        donor: "捐赠者",
+      },
+      domain: {
+        add: "添加域名",
+        default: "默认",
+        setDefault: "设为默认",
+        healthCheck: "健康检查",
+        healthy: "可用",
+        unhealthy: "不可用",
+        unknown: "未探测",
+        current: "当前生效",
+        personal: "个人下载域名（自动获取）",
+        dragHint: "上下移动调整优先级",
+        // s-library: 辅助词条（重复域名提示，表格外补充）
+        duplicate: "该域名已存在",
+      },
+      download: {
+        concurrency: "下载并发数",
+        defaultLibrary: "默认目标书库",
+        autoByFormat: "自动（按格式匹配书库）",
+        defaultLibraryHint: "不指定时按格式自动分配：漫画→漫画书库，电子书→小说书库；入库时也可在详情页手动选择任意书库",
+      },
+      permission: {
+        scope: "允许使用 Z-Library 的用户范围",
+        adminsOnly: "仅管理员",
+        canManage: "拥有书库管理权限的用户",
+        all: "所有登录用户",
+      },
+      fallback: {
+        desc: "全部域名不可达时，向 blackbox@z-library.so 发送任意邮件，系统将自动回复最新可用域名",
+        copyEmail: "复制邮箱",
+        emailCopied: "已复制",
+        addDomain: "手动填入新域名",
+      },
+      saved: "已保存",
+      // s-library: 以下 3 条为 extMismatch 文案 {libraryType} 插值的辅助词条（设计文档表格外补充）
+      libraryTypeComic: "漫画书库",
+      libraryTypeNovel: "小说书库",
+      libraryTypeMixed: "混合书库",
+    },
+  },
 } satisfies Translations;
 
 export default zhCN;
@@ -2653,5 +2858,205 @@ export interface Translations {
     categoriesUnit: string;
     confirmBatchDeleteCats: string;
     batchDeleteCatsWarning: string;
+  };
+  // s-library: 新增 — Z-Library 命名空间类型（与上方对象同构，en.ts 受此约束）
+  zlibrary: {
+    navLabel: string;
+    libraryNotCompatible: string;
+    tasksNavLabel: string;
+    searchTitle: string;
+    searchDescription: string;
+    searchPlaceholder: string;
+    searchButton: string;
+    searching: string;
+    quotaRemaining: string;
+    quotaExhaustedShort: string;
+    filter: {
+      language: string;
+      format: string;
+      sort: string;
+      yearFrom: string;
+      yearTo: string;
+      more: string;
+      less: string;
+      clear: string;
+    };
+    sort: {
+      bestmatch: string;
+      newest: string;
+      popular: string;
+    };
+    view: {
+      grid: string;
+      list: string;
+    };
+    results: {
+      loadMore: string;
+      noMore: string;
+      count: string;
+    };
+    status: {
+      notImported: string;
+      imported: string;
+      queued: string;
+      viewLocal: string;
+    };
+    history: {
+      title: string;
+      clear: string;
+    };
+    empty: {
+      searchReady: string;
+      noResults: string;
+      tryDifferent: string;
+    };
+    error: {
+      authRequired: string;
+      authFailed: string;
+      quotaExceeded: string;
+      sizeLimit: string;
+      domainUnreachable: string;
+      blocked: string;
+      notFound: string;
+      extMismatch: string;
+      diskFull: string;
+      dupImported: string;
+      dupQueued: string;
+      scanFailed: string;
+      timeout: string;
+      quotaConsumed: string;
+      libNotFound: string;
+      rateLimited: string;
+      upstream: string;
+      forbidden: string;
+      interrupted: string;
+      invalidState: string;
+    };
+    action: {
+      goSettings: string;
+      retry: string;
+      retryTomorrow: string;
+      cancel: string;
+      removeRecord: string;
+      scanNow: string;
+    };
+    detail: {
+      title: string;
+      author: string;
+      publisher: string;
+      year: string;
+      language: string;
+      format: string;
+      size: string;
+      rating: string;
+      description: string;
+      expandDesc: string;
+      collapseDesc: string;
+      formatSelector: string;
+      noCompatibleLibrary: string;
+      noFormatSelected: string;
+      librarySelector: string;
+      import: string;
+      importQueued: string;
+      imported: string;
+      viewTask: string;
+      notConnectedHint: string;
+      quotaHint: string;
+    };
+    tasks: {
+      title: string;
+      activeCount: string;
+      emptyTitle: string;
+      emptyHint: string;
+      clearHistory: string;
+      by: string;
+      stage: {
+        fetchInfo: string;
+        downloading: string;
+        validating: string;
+        moving: string;
+        scanning: string;
+      };
+      status: {
+        queued: string;
+        completed: string;
+        failed: string;
+        canceled: string;
+      };
+      viewBook: string;
+      importedToast: string;
+    };
+    settings: {
+      tabLabel: string;
+      section: {
+        connection: string;
+        domain: string;
+        download: string;
+        permission: string;
+        fallback: string;
+      };
+      status: {
+        connected: string;
+        disconnected: string;
+        notConfigured: string;
+      };
+      credential: {
+        email: string;
+        password: string;
+        passwordHint: string;
+        encrypted: string;
+        modePassword: string;
+        modeToken: string;
+        remixUserId: string;
+        remixUserKey: string;
+        tokenHint: string;
+      };
+      action: {
+        testConnection: string;
+        testing: string;
+        unbind: string;
+        saveCredentials: string;
+      };
+      unbindConfirm: string;
+      accountType: {
+        free: string;
+        donor: string;
+      };
+      domain: {
+        add: string;
+        default: string;
+        setDefault: string;
+        healthCheck: string;
+        healthy: string;
+        unhealthy: string;
+        unknown: string;
+        current: string;
+        personal: string;
+        dragHint: string;
+        duplicate: string;
+      };
+      download: {
+        concurrency: string;
+        defaultLibrary: string;
+        autoByFormat: string;
+        defaultLibraryHint: string;
+      };
+      permission: {
+        scope: string;
+        adminsOnly: string;
+        canManage: string;
+        all: string;
+      };
+      fallback: {
+        desc: string;
+        copyEmail: string;
+        emailCopied: string;
+        addDomain: string;
+      };
+      saved: string;
+      libraryTypeComic: string;
+      libraryTypeNovel: string;
+      libraryTypeMixed: string;
+    };
   };
 }

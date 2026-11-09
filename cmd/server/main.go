@@ -18,6 +18,7 @@ import (
 	"github.com/nowen-reader/nowen-reader/internal/middleware"
 	"github.com/nowen-reader/nowen-reader/internal/service"
 	"github.com/nowen-reader/nowen-reader/internal/store"
+	zlibservice "github.com/nowen-reader/nowen-reader/internal/zlibrary/service" // s-library:
 	"github.com/nowen-reader/nowen-reader/web"
 )
 
@@ -37,7 +38,7 @@ func main() {
 	// ============================================================
 	displayVersion := formatVersionForDisplay(Version)
 	fmt.Println("┌─────────────────────────────────────────┐")
-	fmt.Println("│         NowenReader " + displayVersion + padRight(displayVersion, 20) + "│")
+	fmt.Println("│         ZlibReader " + displayVersion + padRight(displayVersion, 20) + "│")
 	fmt.Println("│     高性能自托管漫画管理平台              │")
 	fmt.Println("└─────────────────────────────────────────┘")
 	log.Printf("[Main] Version: %s, Build: %s, Commit: %s", Version, BuildTime, GitCommit)
@@ -104,6 +105,10 @@ func main() {
 	// Start storage usage sampler (数据管理模块)
 	// ============================================================
 	service.StartStorageSampler(handler.SampleStorageUsage)
+
+	// s-library: 启动 Z-Library 下载任务队列（重启恢复 downloading→failed + 清理临时文件，
+	// docs/ARCHITECTURE.md §8-3）
+	zlibservice.StartQueue()
 
 	// ============================================================
 	// Setup Gin router

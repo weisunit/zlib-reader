@@ -1,0 +1,215 @@
+<h1 align="center">Nowen Reader（弄文阅读）</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/github/license/cropflre/nowen-reader?style=flat-square" alt="License" />
+  <img src="https://img.shields.io/github/stars/cropflre/nowen-reader?style=flat-square" alt="Stars" />
+  <img src="https://img.shields.io/docker/pulls/cropflre/nowen-reader?style=flat-square" alt="Docker Pulls" />
+  <img src="https://img.shields.io/docker/image-size/cropflre/nowen-reader/latest?style=flat-square" alt="Image Size" />
+  <img src="https://img.shields.io/badge/Go-1.23-00ADD8?style=flat-square&logo=go" alt="Go" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react" alt="React" />
+</p>
+
+<p align="center">
+  <strong>High-performance self-hosted manga & novel management and reading platform</strong><br>
+  Single Go binary · Lightweight · AI-powered · NAS-friendly
+</p>
+
+<p align="center">
+  <a href="./README.md">简体中文</a> ·
+  <a href="./README.en.md">English</a>
+</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="./docs/INSTALL.en.md">Installation</a> •
+  <a href="./docs/CONFIGURATION.en.md">Configuration</a> •
+  <a href="./docs/API.md">API</a> •
+  <a href="./docs/DEVELOPMENT.md">Development</a> •
+  <a href="./docs/FAQ.md">FAQ</a>
+</p>
+
+---
+
+## 💡 Introduction
+
+Nowen Reader（弄文阅读） is a self-hosted manga / novel management and reading platform optimized for NAS and personal server environments.
+
+| 🏆 Highlights | Description |
+|:---|:---|
+| 💾 **Ultra Lightweight** | Runs smoothly with 512 MB memory limit; Docker image only ~30 MB |
+| 📦 **Zero Dependency** | Compiled into a single static Go binary with embedded frontend (`go:embed`) |
+| 🐳 **One-click Docker** | Three Compose configurations: generic, production, NAS |
+| 🤖 **AI-powered (optional)** | 17+ LLM providers supported, including major Chinese models |
+| 📚 **Full Format Support** | Manga: ZIP / CBZ / CBR / RAR / 7Z / CB7 / PDF · Novels: TXT / EPUB / MOBI / AZW3 / HTML |
+| 🌐 **Bilingual UI** | Chinese / English interface with metadata translation |
+| 📱 **Multi-platform** | Web PWA + Flutter native client (Android / iOS / Desktop) |
+| 🏗️ **Multi-arch** | amd64 / arm64; covers mainstream NAS (Synology, QNAP, UGreen, TerraMaster, etc.) |
+
+## ✨ Features
+
+- **📚 Content Management** — Multi-format, auto-scan, tags & categories, group merging, favorites & ratings, user-level reading status (want/reading/finished), reading status filter, metadata editing, file upload, batch operations, duplicate detection, invalid cleanup
+- **🔍 Metadata Scraping** — AniList / Bangumi / MangaDex / MangaUpdates / Kitsu; ComicInfo.xml & novel metadata extraction
+- **🤖 AI Assistance (optional)** — Semantic search, smart summary, tag/category suggestions, cover analysis, filename parsing, reading insights, AI chat, chapter summary, page translation, etc.
+- **📖 Reading Experience** — Single/double-page, webtoon mode, image filters & presets, webtoon double-tap zoom, comic bookmarks, novel chapters, PDF rendering, continue reading, reading stats & goals, data export
+- **📡 Protocol Integration** — OPDS support (KOReader / Moon+ Reader, etc.)
+- **📱 Multi-platform** — Web PWA + Flutter native client (Material 3, gesture zoom, immersive reading, progress sync)
+- **🛠️ Deploy-friendly** — Single Go binary, SQLite (WAL + FTS5), multi-arch Docker, i18n, theming, responsive
+- **🔐 Multi-user Library Access** — Per-library access control with public / private / group inheritance, friendly 403 for unauthorized content
+
+## 🚀 Quick Start
+
+Three steps to a minimal deployment:
+
+```bash
+# 1. Download the production compose file
+curl -O https://raw.githubusercontent.com/cropflre/nowen-reader/main/docker-compose.prod.yml
+
+# 2. Start the container
+docker compose -f docker-compose.prod.yml up -d
+
+# 3. Open in browser
+# http://localhost:6680
+```
+
+On first visit you'll be prompted to register an admin account. Place manga in `./comics/` and novels in `./novels/` to enable auto-scanning.
+
+> 🔧 Need a different deployment method? See the [Installation Guide](./docs/INSTALL.en.md) (NAS / source build / binary / Docker Hub).
+
+To deploy at `https://example.com/reader/`, set `BASE_PATH=/reader` and configure the reverse proxy to preserve the `/reader` prefix. See the [subpath deployment guide](./docs/INSTALL.en.md#deploy-under-a-subpath) for complete Docker and Nginx examples.
+
+## 📚 Documentation
+
+| Document | Content |
+|:---|:---|
+| [Installation Guide](./docs/INSTALL.en.md) | 5 deployment methods: Docker Hub, NAS, source build, binary, Docker Compose |
+| [Configuration](./docs/CONFIGURATION.en.md) | Environment variables, site settings, AI config, scanner parameters, supported formats |
+| [API Reference](./docs/API.md) | Full RESTful API documentation |
+| [Development Guide](./docs/DEVELOPMENT.md) | Prerequisites, project structure, Makefile, tech stack, CI/CD |
+| [FAQ](./docs/FAQ.md) | Common questions about deployment, permissions, thumbnails, PDF, AI, OPDS |
+| [Flutter Client](./flutter_app/README.md) | Mobile development & build instructions |
+
+## 📸 Screenshots
+
+The desktop and reader screenshots show the v1.2.3 interface with demonstration books and reading data. The interface is shown in Simplified Chinese.
+
+### Home · Continue Reading
+
+<p align="center">
+  <img src="./docs/screenshots/01-home-reading-overview.jpg" alt="Home - Continue reading, recent additions, and library overview" width="100%" />
+</p>
+
+### Library & Book Details
+
+<table>
+  <tr>
+    <td align="center" width="50%"><b>Library · Tags & Reading Progress</b></td>
+    <td align="center" width="50%"><b>Book Details · Ratings & Metadata</b></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="./docs/screenshots/02-library-grid.jpg" alt="Library - Comics and novels, tag filters, favorites, and reading progress" width="100%" /></td>
+    <td valign="top"><img src="./docs/screenshots/03-book-detail.jpg" alt="Book details - Cover, rating, reading status, description, and similar books" width="100%" /></td>
+  </tr>
+</table>
+
+### Comic & Novel Readers
+
+<table>
+  <tr>
+    <td align="center" width="50%"><b>Comics · Immersive Single-Page Reading</b></td>
+    <td align="center" width="50%"><b>Novels · Paper Theme</b></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="./docs/screenshots/04-comic-reader.jpg" alt="Comic reader - Single-page reading and page indicator" width="100%" /></td>
+    <td valign="top"><img src="./docs/screenshots/05-novel-reader.jpg" alt="Novel reader - Chapter layout and warm paper theme" width="100%" /></td>
+  </tr>
+</table>
+
+### Library Management & Reader Settings
+
+<table>
+  <tr>
+    <td align="center" width="50%"><b>Libraries · Directories, Scanning & Permissions</b></td>
+    <td align="center" width="50%"><b>Reader Settings · Display Modes & Filters</b></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="./docs/screenshots/06-library-management.jpg" alt="Library management - Separate comic and novel libraries, automatic scanning, and private access" width="100%" /></td>
+    <td valign="top"><img src="./docs/screenshots/07-comic-settings.jpg" alt="Reader settings - Page fit, rendering, reading direction, and image filter controls" width="100%" /></td>
+  </tr>
+</table>
+
+### Mobile / PWA
+
+<p align="center">
+  <img src="./docs/移动端1.png" alt="Mobile PWA UI" width="40%" />
+</p>
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              Nowen Reader Architecture                  │
+├──────────────────────┬──────────────────────────────────┤
+│   Frontend (SPA)     │   Backend (Go)                   │
+│  React 19 + Vite 6   │   Gin + SQLite (WAL + FTS5)      │
+│  Tailwind CSS v4     │   ┌─────────────────────────┐    │
+│  React Router v7     │   │ Handler / Middleware    │    │
+│  PDF.js              │   │ Service / Store         │    │
+│                      │   │ Archive (ZIP/RAR/7Z/..) │    │
+│  go:embed ──────────►│   └─────────────────────────┘    │
+├──────────────────────┼──────────────────────────────────┤
+│   Flutter App        │      ← HTTP API →                │
+│  (Android / iOS)     │                                  │
+└──────────────────────┴──────────────────────────────────┘
+```
+
+## 🛠️ Tech Stack
+
+- **Backend**: Go 1.23 · Gin · SQLite (`modernc.org/sqlite`) · FTS5 · fsnotify · go:embed
+- **Frontend**: React 19 · Vite 6 · TypeScript 5 · Tailwind CSS v4 · React Router v7 · PDF.js
+- **Mobile**: Flutter 3.x · Riverpod 2.x · GoRouter · Dio · Material 3
+- **Deploy**: Multi-stage Docker (~30 MB) · amd64 + arm64 · GitHub Actions CI/CD
+
+## 🤝 Contributing
+
+All forms of contribution are welcome:
+
+- 🐛 [Report a Bug](https://github.com/cropflre/nowen-reader/issues)
+- 💡 [Start a Discussion](https://github.com/cropflre/nowen-reader/discussions)
+- 🔧 Submit a Pull Request
+- 🌐 Add new translations
+- 📖 Improve documentation
+
+See the [Development Guide](./docs/DEVELOPMENT.md) for the workflow.
+
+## ⭐ Star History
+
+If this project helps you, please consider starring it ⭐
+
+[![Star History Chart](https://api.star-history.com/svg?repos=cropflre/nowen-reader&type=Date)](https://star-history.com/#cropflre/nowen-reader&Date)
+
+## 📮 Contact
+
+- 🐛 Bug / Feature: [GitHub Issues](https://github.com/cropflre/nowen-reader/issues) / [Discussions](https://github.com/cropflre/nowen-reader/discussions)
+- 💬 QQ Group: **1093473044**
+- 📢 WeChat Official Account: **Nowen 开源实验室**
+
+## 💖 Support & Community
+
+If Nowen Reader（弄文阅读） is useful to you, you can support continued development via Alipay or WeChat. You can also follow the WeChat Official Account **Nowen 开源实验室** or join the QQ group for help, feedback, and feature discussions.
+
+<table>
+  <tr>
+    <td align="center" width="50%"><b>Alipay</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-note/main/frontend/src/assets/sponsor/zhifubao.png" alt="Alipay donation QR code" width="240"></td>
+    <td align="center" width="50%"><b>WeChat Donation</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-note/main/frontend/src/assets/sponsor/weixin.jpg" alt="WeChat donation QR code" width="240"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>WeChat Official Account · Nowen 开源实验室</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-video/main/docs/assets/branding/nowen-open-lab-wechat.jpg" alt="WeChat Official Account · Nowen 开源实验室" width="240"></td>
+    <td align="center"><b>QQ Group · 1093473044</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-note/main/frontend/src/assets/feedback/qq-group.jpg" alt="Nowen QQ Group QR code" width="240"></td>
+  </tr>
+</table>
+
+> Donations are entirely optional and do not affect free and open-source use of the project. Thank you for supporting the Nowen open-source projects ❤️
+
+## 📄 License
+
+This project is licensed under the [GNU General Public License v3.0](./LICENSE) (GPL-3.0). Derivative works distributed externally must also be open-sourced under GPL-3.0 with the original copyright notice and full license text preserved.

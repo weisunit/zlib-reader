@@ -20,7 +20,7 @@ func SearchMangaDex(query, lang string) []ComicMetadata {
 		mangadexAPI, url.QueryEscape(query))
 
 	resp, err := httpGet(u, map[string]string{
-		"User-Agent": "NowenReader/1.0",
+		"User-Agent": "ZlibReader/1.0",
 	}, 15*time.Second)
 	if err != nil {
 		log.Printf("[metadata] MangaDex search failed: %v", err)

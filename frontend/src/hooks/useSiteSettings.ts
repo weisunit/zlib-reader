@@ -10,7 +10,7 @@ interface SiteSettings {
 }
 
 const defaultSettings: SiteSettings = {
-  siteName: "NowenReader",
+  siteName: "ZlibReader",
   siteIcon: "",
   scraperEnabled: false,
 };
@@ -25,7 +25,7 @@ async function fetchSiteSettings(): Promise<SiteSettings> {
     if (!res.ok) return defaultSettings;
     const data = await res.json();
     return {
-      siteName: data.siteName || "NowenReader",
+      siteName: data.siteName || "ZlibReader",
       siteIcon: data.siteIcon || "",
       scraperEnabled: data.scraperEnabled ?? false,
     };

@@ -43,7 +43,8 @@ func TestOPDSBasicAPIKeyAuthentication(t *testing.T) {
 	if invalid.Code != http.StatusUnauthorized {
 		t.Fatalf("mismatched Basic username returned %d, want 401", invalid.Code)
 	}
-	if challenge := invalid.Header().Get("WWW-Authenticate"); !strings.Contains(challenge, "Nowen Reader OPDS") {
+	// s-library: 更名 ZlibReader —— realm 断言同步更新
+	if challenge := invalid.Header().Get("WWW-Authenticate"); !strings.Contains(challenge, "ZlibReader OPDS") {
 		t.Fatalf("missing OPDS Basic challenge: %q", challenge)
 	}
 

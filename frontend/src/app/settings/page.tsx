@@ -8,6 +8,7 @@ import {
   Info,
   Brain,
   Globe,
+  Globe2, // s-library: Z-Library tab 图标（UI-DESIGN §3.4）
   BookOpen,
   Sparkles,
   Github,
@@ -91,11 +92,18 @@ const NASDiagnosticsPanel = dynamic(
   { loading: LoadingSkeleton }
 );
 
+// s-library: Z-Library 设置面板（连接/域名/下载行为/权限/兜底指引五分组，UI-DESIGN §3.4）
+const ZLibrarySettingsPanel = dynamic(
+  () => import("@/components/ZLibrarySettingsPanel").then((mod) => mod.default),
+  { loading: LoadingSkeleton }
+);
+
 /* ── 类型 ── */
 type SettingsTab =
   | "account"
   | "site"
   | "ai"
+  | "zlibrary" // s-library: Z-Library 分区 tab（UI-DESIGN §2.2）
   | "scan-rules"
   | "users"
   | "libraries"
@@ -139,7 +147,7 @@ export default function SettingsPage() {
     "account",
     "reader",
     ...(isAdmin
-      ? ["site" as const, "ai" as const, "scan-rules" as const, "users" as const, "libraries" as const, "user-groups" as const, "diagnostics" as const]
+      ? ["site" as const, "ai" as const, "zlibrary" as const, "scan-rules" as const, "users" as const, "libraries" as const, "user-groups" as const, "diagnostics" as const]
       : []),
     "about",
   ];
@@ -201,6 +209,8 @@ export default function SettingsPage() {
       tabs: [
         ...(isAdmin
           ? [
+              // s-library: Z-Library tab（排在 AI 服务之前，UI-DESIGN §3.4）
+              { id: "zlibrary" as const, label: t.zlibrary?.settings.tabLabel || "Z-Library", icon: <Globe2 className="h-[18px] w-[18px]" />, desc: "连接、域名、下载与权限", keywords: ["Z-Library", "zlibrary", "z-lib", "连接", "域名", "配额", "下载", "入库", "remix"] },
               { id: "ai" as const, label: "AI 服务", icon: <Brain className="h-[18px] w-[18px]" />, desc: "模型、连接与用量", keywords: ["AI", "模型", "服务", "连接", "云端", "本地", "llama", "用量"] },
               { id: "scan-rules" as const, label: "扫描自动化", icon: <Wand2 className="h-[18px] w-[18px]" />, desc: "识别、归类与目录整理", keywords: ["扫描", "规则", "归类", "目录", "硬链接", "过滤", "scan", "rules"] },
             ]
@@ -269,6 +279,7 @@ export default function SettingsPage() {
       {activeTab === "account" && <AccountPanel />}
       {activeTab === "site" && <SiteSettingsPanel />}
       {activeTab === "ai" && <AISettingsPanel />}
+      {activeTab === "zlibrary" && <ZLibrarySettingsPanel />} {/* s-library: Z-Library 分区面板 */}
       {activeTab === "scan-rules" && <ScanRulesPanel />}
       {activeTab === "users" && <UserManagementPanel />}
       {activeTab === "libraries" && <LibraryManagementPanel />}
@@ -702,8 +713,9 @@ function AboutPanel() {
   const t = useTranslation();
   const feedbackEmail = "nowenlab@qq.com";
   const feedbackQqGroupNumber = "1093473044";
-  const feedbackMailto = `mailto:${feedbackEmail}?subject=${encodeURIComponent("[NowenReader 反馈]")}`;
-  const releaseUrl = "https://github.com/cropflre/nowen-reader/releases";
+  const feedbackMailto = `mailto:${feedbackEmail}?subject=${encodeURIComponent("[ZlibReader 反馈]")}`;
+  // s-library: 更新日志指向本项目 releases；上游发布页保留在开源致谢卡
+  const releaseUrl = "https://github.com/YOUR_GH_USERNAME/zlib-reader/releases";
   const noteAssetRevision = "884f5bc7654fe5f5dced8c5207e36cbce11d1872";
   const noteAssetBase = `https://raw.githubusercontent.com/cropflre/nowen-note/${noteAssetRevision}/frontend/src/assets`;
   const communityQr = `${noteAssetBase}/community/nowen-lab-wechat.jpg`;
@@ -744,9 +756,10 @@ function AboutPanel() {
             <BookOpen className="h-8 w-8 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">NowenReader</h2>
+            <h2 className="text-2xl font-bold text-foreground tracking-tight">ZlibReader</h2>
+            {/* s-library: 二开定位描述 */}
             <p className="mt-1 text-sm text-muted">
-              {t.settings?.aboutSlogan || "高性能自托管漫画 & 小说管理平台"}
+              {t.settings?.aboutSlogan || "基于 NowenReader 深度二次开发 · 集成 Z-Library 搜索与一键入库"}
             </p>
           </div>
           <div className="flex items-center gap-2 flex-wrap justify-center">
@@ -797,7 +810,58 @@ function AboutPanel() {
         </div>
       </div>
 
-      {/* Nowen 开源实验室 */}
+      {/* s-library: 开源与致谢 —— 二开声明 / 上游项目 / GPL-3.0 */}
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
+        <div className="px-5 py-3.5 border-b border-border/30">
+          <h3 className="text-sm font-semibold text-foreground">开源与致谢</h3>
+        </div>
+        <div className="space-y-4 px-5 py-4 text-xs leading-relaxed text-muted">
+          <p>
+            ZlibReader 基于{" "}
+            <a
+              href="https://github.com/cropflre/nowen-reader"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:underline"
+            >
+              NowenReader
+            </a>{" "}
+            （&#169; Nowen 开源实验室）深度二次开发，遵循{" "}
+            <a
+              href="https://www.gnu.org/licenses/gpl-3.0.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:underline"
+            >
+              GPL-3.0
+            </a>{" "}
+            开源协议，在此衷心感谢原项目作者的卓越工作。
+          </p>
+          <p>
+            本分支新增 Z-Library 搜索与一键入库插件（独立模块，详见项目 docs/PLUGIN.md），
+            其余核心能力（书库管理、阅读器、元数据刮削、多用户）均来自上游项目。
+            依据 GPL-3.0，本分支同样以 GPL-3.0 开源分发，并保留原项目全部版权声明。
+          </p>
+          <p className="text-muted/70">
+            Z-Library 内容版权归原权利人所有，本工具仅供个人学习与研究，请遵守当地法律法规。
+          </p>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <a
+              href="https://github.com/cropflre/nowen-reader"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-[11px] font-medium text-accent"
+            >
+              上游项目 NowenReader
+            </a>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1 text-[11px] text-muted">
+              GPL-3.0
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Nowen 开源实验室（上游作者社区，保留致谢） */}
       <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent">

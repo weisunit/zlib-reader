@@ -28,7 +28,7 @@ function normalizeReaderError(message: string) {
     lower.includes("operation not permitted") ||
     lower.includes("eacces")
   ) {
-    return "无法读取漫画文件（Permission denied）。NowenReader 对该文件没有读取权限。请检查宿主机/NAS 文件的 UID、GID 或 ACL，并让 Docker 的 PUID/PGID 与媒体文件权限匹配。如果只有后来新增的文件异常，可临时设置 PERMISSION_FIX_MODE=recursive 后重建容器进行一次递归修复；NAS/SMB/NFS 无法 chown 时可使用 recursive-relaxed。";
+    return "无法读取漫画文件（Permission denied）。ZlibReader 对该文件没有读取权限。请检查宿主机/NAS 文件的 UID、GID 或 ACL，并让 Docker 的 PUID/PGID 与媒体文件权限匹配。如果只有后来新增的文件异常，可临时设置 PERMISSION_FIX_MODE=recursive 后重建容器进行一次递归修复；NAS/SMB/NFS 无法 chown 时可使用 recursive-relaxed。";
   }
   return message;
 }

@@ -10,7 +10,10 @@ import {
   LogOut,
   RefreshCw,
   BookMarked,
+  Globe2,
+  CloudDownload, // s-library: 任务中心图标（UI-DESIGN §2.1）
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme-context";
@@ -18,6 +21,10 @@ import { useAuth } from "@/lib/auth-context";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import UserMenuButton from "@/components/UserMenuButton";
 import SearchIconButton from "@/components/SearchIconButton";
+// s-library: 移动端 Z-Library 入口（搜索 + 任务中心角标；桌面由 dock 承担）
+import { useZLibraryStatus } from "@/hooks/useZLibraryStatus";
+import { useZLibraryTaskBadge, setTaskCenterOpen } from "@/hooks/useZLibraryTasks";
+import TaskCenterBadge from "@/components/zlibrary/TaskCenterBadge";
 
 interface DashboardTopBarProps {
   onUpload?: () => void;
@@ -42,6 +49,10 @@ export default function DashboardTopBar({
   const isAdmin = user?.role === "admin";
   const router = useRouter();
   const { siteName } = useSiteSettings();
+  // s-library: Z-Library 入口可见性与任务角标
+  const { status: zStatus } = useZLibraryStatus();
+  const zCanUse = !!zStatus;
+  const zTaskBadge = useZLibraryTaskBadge();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
@@ -85,6 +96,30 @@ export default function DashboardTopBar({
       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         <SearchIconButton query={searchQuery} onChange={setSearchQuery}
           onSubmit={() => router.push(`/books?search=${encodeURIComponent(searchQuery.trim())}`)} />
+        {/* s-library: 移动端 Z-Library 搜索入口（<640px 显示，桌面由左侧 dock 承担） */}
+        {zCanUse && (
+          <Link
+            href="/zlibrary"
+            aria-label={t.zlibrary?.navLabel || "Z-Library"}
+            title={t.zlibrary?.navLabel || "Z-Library"}
+            className="shell-icon-button sm:hidden"
+          >
+            <Globe2 className="h-4 w-4" />
+          </Link>
+        )}
+        {/* s-library: 移动端任务中心入口（带活动任务数角标） */}
+        {zCanUse && (
+          <button
+            type="button"
+            onClick={() => setTaskCenterOpen(true)}
+            aria-label={t.zlibrary?.tasksNavLabel || "下载任务"}
+            title={t.zlibrary?.tasksNavLabel || "下载任务"}
+            className="shell-icon-button relative sm:hidden"
+          >
+            <CloudDownload className="h-4 w-4" />
+            <TaskCenterBadge count={zTaskBadge} />
+          </button>
+        )}
         {/* 扫描 */}
         {isAdmin && onScanLibrary && (
           <button

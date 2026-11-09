@@ -159,7 +159,7 @@ func cacheCoverAsThumbnail(comicID, coverURL string) error {
 	if err != nil {
 		return err
 	}
-	req.Header.Set("User-Agent", "NowenReader/1.0")
+	req.Header.Set("User-Agent", "ZlibReader/1.0")
 
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != 200 {
@@ -260,7 +260,7 @@ func downloadGroupCoverToLocalInternal(groupID int, coverURL string, thumbDir st
 	if err != nil {
 		return
 	}
-	req.Header.Set("User-Agent", "NowenReader/1.0")
+	req.Header.Set("User-Agent", "ZlibReader/1.0")
 
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != 200 {
@@ -353,7 +353,7 @@ func DownloadSeriesCover(seriesID, coverURL string) {
 	if err != nil {
 		return
 	}
-	req.Header.Set("User-Agent", "NowenReader/1.0")
+	req.Header.Set("User-Agent", "ZlibReader/1.0")
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		if resp != nil {

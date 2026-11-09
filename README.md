@@ -1,221 +1,184 @@
-<h1 align="center">Nowen Reader（弄文阅读）</h1>
+<h1 align="center">ZlibReader</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/github/license/cropflre/nowen-reader?style=flat-square" alt="License" />
-  <img src="https://img.shields.io/github/stars/cropflre/nowen-reader?style=flat-square" alt="Stars" />
-  <img src="https://img.shields.io/docker/pulls/cropflre/nowen-reader?style=flat-square" alt="Docker Pulls" />
-  <img src="https://img.shields.io/docker/image-size/cropflre/nowen-reader/latest?style=flat-square" alt="Image Size" />
+  <img src="https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square" alt="License" />
   <img src="https://img.shields.io/badge/Go-1.23-00ADD8?style=flat-square&logo=go" alt="Go" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/基于-NowenReader 二开-8B5CF6?style=flat-square" alt="Fork" />
 </p>
 
 <p align="center">
-  <strong>高性能自托管漫画 & 小说管理阅读平台</strong><br>
-  Go 单二进制构建 · 轻量极速 · AI 智能辅助 · NAS 友好
+  <strong>自托管书库平台 · 集成 Z-Library 搜索与一键入库</strong><br>
+  搜书 → 一键入库 → 在线阅读，全程不离开平台
 </p>
 
 <p align="center">
-  <a href="./README.md">简体中文</a> ·
-  <a href="./README.en.md">English</a>
-</p>
-
-<p align="center">
-  <a href="#-快速开始">快速开始</a> •
-  <a href="./docs/INSTALL.md">安装指南</a> •
-  <a href="./docs/CONFIGURATION.md">配置说明</a> •
-  <a href="./docs/API.md">API</a> •
-  <a href="./docs/DEVELOPMENT.md">开发</a> •
-  <a href="./docs/FAQ.md">FAQ</a>
+  基于 <a href="https://github.com/cropflre/nowen-reader">NowenReader</a>（弄文阅读）深度二次开发，
+  遵循 <a href="./LICENSE">GPL-3.0</a> 开源 · 上游升级兼容性设计见 <a href="./docs/PLUGIN.md">docs/PLUGIN.md</a>
 </p>
 
 ---
 
-> **问题反馈 QQ 群：`1093473044`**
+## 这是什么
 
-## 💡 项目简介
+ZlibReader 是一个自托管的书库管理与阅读平台。它继承了 [NowenReader](https://github.com/cropflre/nowen-reader) 的全部核心能力（漫画/小说书库管理、多格式阅读器、元数据刮削、多用户权限、OPDS、AI 辅助、PWA），并在此之上以**插件化模块**集成了 **Z-Library 搜索与一键入库**：
 
-Nowen Reader（弄文阅读）是一个专为 NAS 与个人服务器场景优化的自托管漫画 / 小说管理阅读平台。
+```
+Z-Library 搜索 → 点击入库 → 自动下载 → 自动扫描 → 元数据回填 → 在线阅读
+```
 
-| 🏆 核心优势 | 说明 |
-|:---|:---|
-| 💾 **极致轻量** | 内存限制 512 MB 即可流畅运行，Docker 镜像仅约 30 MB |
-| 📦 **零依赖部署** | Go 编译为单个静态二进制，前端通过 `go:embed` 嵌入其中 |
-| 🐳 **Docker 一键启动** | 提供通用、生产、NAS 三种 Compose 配置 |
-| 🤖 **AI 智能辅助** | 可选接入 17+ LLM 供应商（含主流国内大模型） |
-| 📚 **全格式覆盖** | 漫画 ZIP / CBZ / CBR / RAR / 7Z / CB7 / PDF；小说 TXT / EPUB / MOBI / AZW3 / HTML |
-| 🌐 **中文原生支持** | 中英双语界面、元数据中英翻译 |
-| 📱 **多端访问** | Web PWA + Flutter 原生客户端（Android / iOS / 桌面） |
-| 🏗️ **多平台架构** | amd64 / arm64，覆盖主流 NAS（群晖、威联通、绿联、铁威马等） |
+> **合规声明**：本项目仅供个人学习与研究。Z-Library 内容版权归原权利人所有，
+> 使用本工具时请遵守你所在地区的法律法规及 Z-Library 服务条款。
+> 本项目不分发任何书籍内容，也不内置任何账号。
 
-## ✨ 核心特性
+## 界面预览
 
-- **📚 内容管理** — 多格式支持、自动扫描入库、标签 & 分类、合并分组、收藏 & 评分、用户级阅读状态（想读/在读/已读完）、按阅读状态筛选、元数据编辑、文件上传、批量操作、重复检测、无效清理
-- **🔍 元数据抓取** — AniList / Bangumi / MangaDex / MangaUpdates / Kitsu 五大数据源，支持 ComicInfo.xml 和小说元数据自动提取
-- **🤖 AI 智能辅助（可选）** — 语义搜索、智能摘要、标签 / 分类建议、封面分析、文件名解析、阅读洞察、AI 对话、章节摘要、页面翻译等 18 项能力
-- **📖 阅读体验** — 漫画多种阅读模式（单页/双页/条漫/Webtoon）、图片滤镜与预设、Webtoon 双击缩放、漫画书签、小说章节渲染、PDF 渲染、继续阅读、阅读统计、阅读目标、数据导出
-- **📡 协议集成** — 支持 OPDS（KOReader / Moon+ Reader 等阅读器远程串流）
-- **📱 多端支持** — Web PWA + Flutter 原生客户端（Material 3 设计、手势缩放、沉浸式阅读、阅读进度同步）
-- **🛠️ 部署友好** — Go 单二进制、SQLite 零配置（WAL + FTS5）、Docker 多平台镜像、多语言、深浅主题、响应式布局
-- **🔐 多用户书库权限** — 按书库分配访问权限，支持公开 / 私有 / 用户组继承，无权限内容 403 友好提示
+**Z-Library 搜索 —— 封面网格 / 配额 / 一键入库 / 已入库标记**
 
-## 🚀 快速开始
+![Z-Library 搜索页](docs/screenshots-zlib/zlibrary-search.png)
 
-三步完成最小化部署：
+**设置 —— 连接 / 域名容灾 / 下载行为 / 权限 / 兜底指引**
+
+![Z-Library 设置](docs/screenshots-zlib/zlibrary-settings.png)
+
+## 新增能力（Z-Library 插件）
+
+- **站内搜索**：书名/作者关键词，语言、格式（EPUB/PDF/MOBI/CBZ/ZIP…）、年份、排序筛选，封面网格/列表双视图
+- **一键入库**：配额预检 → 去重校验 → 流式下载（进度实时可见）→ 文件校验 → 规范化命名落盘 → 自动扫描入库
+- **任务中心**：全局抽屉 + 角标，进度/阶段/失败原因可视化，支持重试与取消
+- **智能路由**：漫画（CBZ/CBR/ZIP/RAR/7Z）自动进漫画书库，电子书（EPUB/TXT…）自动进小说书库，PDF 双栖可手动指定
+- **配额管理**：每日额度可视化（免费账号约 10 本/天），超限明确提示
+- **域名容灾**：多镜像健康检查 + 自动故障转移；下载通道支持借用浏览器通行证（详见设置页说明）
+- **去重**：同书同格式重复入库自动拦截，本地删除后可重新入库
+- **权限分档**：管理员 / 可管理书库者 / 全体用户 三档可见性
+
+## 继承自上游的能力
+
+书库管理（多书库/标签/合并分组/重复检测）、多格式阅读器（单双页/条漫/Webtoon/书签）、
+元数据刮削（AniList/Bangumi/MangaDex 等 5 源 + ComicInfo.xml）、AI 辅助（17+ 供应商）、
+OPDS（KOReader/Moon+ Reader）、多用户权限、PWA、中英日三语。
+
+详见上游项目 [README](./README.upstream.md) 与 [docs/](./docs/)。
+
+## 快速开始
+
+### 方式 A · docker-compose（推荐）
+
+仓库自带 `docker-compose.yml`（已指向 GHCR 预构建多平台镜像，自动匹配 amd64/arm64），数据目录、端口、重启策略全部配置好：
 
 ```bash
-# 1. 下载生产配置
-curl -O https://raw.githubusercontent.com/cropflre/nowen-reader/main/docker-compose.prod.yml
+mkdir zlib-reader && cd zlib-reader
+# 下载 compose 文件（或 git clone 本仓库）
+curl -LO https://raw.githubusercontent.com/weisunit/zlib-reader/main/docker-compose.yml
 
-# 2. 一键启动
-docker compose -f docker-compose.prod.yml up -d
-
-# 3. 打开浏览器访问
-# http://localhost:6680
+docker compose up -d          # 自动拉取镜像并启动
+# 打开 http://localhost:6680 → 注册管理员（首个用户自动成为管理员）
 ```
 
-首次访问会引导注册管理员账号。将漫画放入 `./comics/`、小说放入 `./novels/` 目录即可自动扫描入库。
+常用操作：
 
-> 🔧 需要其他部署方式？参见 [安装指南](./docs/INSTALL.md)（NAS / 源码构建 / 二进制 / Docker Hub）。
-
-需要部署到 `https://example.com/reader/` 时，设置 `BASE_PATH=/reader`，并让反向代理保留 `/reader` 前缀。完整 Docker 与 Nginx 示例见 [子路径部署说明](./docs/INSTALL.md#部署到子路径)。
-
-## 📚 文档导航
-
-| 文档 | 内容 |
-|:---|:---|
-| [安装指南](./docs/INSTALL.md) | 5 种部署方式：Docker Hub、NAS、源码构建、二进制、Docker Compose |
-| [飞牛应用包](./docs/FNOS-APP.md) | FPK 安装说明、应用中心简介、图标与打包方法 |
-| [配置说明](./docs/CONFIGURATION.md) | 环境变量、站点设置、AI 配置、扫描器参数、支持格式 |
-| [API 文档](./docs/API.md) | 完整的 RESTful API 参考 |
-| [开发指南](./docs/DEVELOPMENT.md) | 前置条件、项目结构、Makefile 命令、技术栈、CI/CD |
-| [发布指南](./docs/RELEASING.md) | GitHub 构建 Docker 与签名安卓 APK、Secrets 配置和版本发布 |
-| [常见问题](./docs/FAQ.md) | 部署、权限、缩略图、PDF、AI、OPDS 等常见问题 |
-| [Flutter 客户端](./flutter_app/README.md) | 移动端开发与构建说明 |
-
-## 📸 界面预览
-
-以下桌面与阅读器截图来自 v1.2.3 的真实运行界面，书籍与阅读记录为演示数据。
-
-### 首页 · 继续阅读
-
-<p align="center">
-  <img src="./docs/screenshots/01-home-reading-overview.jpg" alt="首页 - 继续阅读、最近添加与书库概览" width="100%" />
-</p>
-
-### 书库与作品详情
-
-<table>
-  <tr>
-    <td align="center" width="50%"><b>书库总览 · 标签与阅读进度</b></td>
-    <td align="center" width="50%"><b>作品详情 · 评分与元数据</b></td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="./docs/screenshots/02-library-grid.jpg" alt="书库总览 - 漫画与小说、标签筛选、收藏和阅读进度" width="100%" /></td>
-    <td valign="top"><img src="./docs/screenshots/03-book-detail.jpg" alt="作品详情 - 封面、评分、阅读状态、简介与相似作品" width="100%" /></td>
-  </tr>
-</table>
-
-### 漫画与小说阅读
-
-<table>
-  <tr>
-    <td align="center" width="50%"><b>漫画阅读 · 沉浸式单页</b></td>
-    <td align="center" width="50%"><b>小说阅读 · 纸色主题</b></td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="./docs/screenshots/04-comic-reader.jpg" alt="漫画阅读器 - 单页阅读与页码指示" width="100%" /></td>
-    <td valign="top"><img src="./docs/screenshots/05-novel-reader.jpg" alt="小说阅读器 - 章节排版与米黄色纸面主题" width="100%" /></td>
-  </tr>
-</table>
-
-### 书库管理与阅读设置
-
-<table>
-  <tr>
-    <td align="center" width="50%"><b>书库管理 · 目录、扫描与权限</b></td>
-    <td align="center" width="50%"><b>阅读设置 · 显示模式与滤镜</b></td>
-  </tr>
-  <tr>
-    <td valign="top"><img src="./docs/screenshots/06-library-management.jpg" alt="书库管理 - 独立漫画与小说书库、自动扫描和私密权限" width="100%" /></td>
-    <td valign="top"><img src="./docs/screenshots/07-comic-settings.jpg" alt="阅读器设置 - 适应显示、页面渲染、阅读方向和图片滤镜入口" width="100%" /></td>
-  </tr>
-</table>
-
-### 移动端 / PWA
-
-<p align="center">
-  <img src="./docs/移动端1.png" alt="移动端 PWA 界面" width="40%" />
-</p>
-
-## 🏗️ 架构概览
-
-```
-┌─────────────────────────────────────────────────────────┐
-│              Nowen Reader Architecture                  │
-├──────────────────────┬──────────────────────────────────┤
-│   Frontend (SPA)     │   Backend (Go)                   │
-│  React 19 + Vite 6   │   Gin + SQLite (WAL + FTS5)      │
-│  Tailwind CSS v4     │   ┌─────────────────────────┐    │
-│  React Router v7     │   │ Handler / Middleware    │    │
-│  PDF.js              │   │ Service / Store         │    │
-│                      │   │ Archive (ZIP/RAR/7Z/..) │    │
-│  go:embed ──────────►│   └─────────────────────────┘    │
-├──────────────────────┼──────────────────────────────────┤
-│   Flutter App        │      ← HTTP API →                │
-│  (Android / iOS)     │                                  │
-└──────────────────────┴──────────────────────────────────┘
+```bash
+docker compose pull && docker compose up -d   # 升级到最新镜像
+docker compose logs -f                        # 看日志
+docker compose down                           # 停止（数据保留在 ./data ./comics ./novels ./cache）
 ```
 
-## 🛠️ 技术栈
+**需要出站代理的网络环境**（Z-Library 等国际站点不可直连时）：不要改 `docker-compose.yml`，
+在同目录创建 `docker-compose.override.yml`（compose 会自动合并，且该文件名已被 gitignore）：
 
-- **后端**：Go 1.23 · Gin · SQLite (`modernc.org/sqlite`) · FTS5 · fsnotify · go:embed
-- **前端**：React 19 · Vite 6 · TypeScript 5 · Tailwind CSS v4 · React Router v7 · PDF.js
-- **移动端**：Flutter 3.x · Riverpod 2.x · GoRouter · Dio · Material 3
-- **部署**：Docker 多阶段构建（约 30 MB） · amd64 + arm64 · GitHub Actions CI/CD
+```yaml
+services:
+  nowen-reader:
+    environment:
+      - HTTPS_PROXY=http://192.168.x.x:10808   # 你的代理地址
+      - HTTP_PROXY=http://192.168.x.x:10808
+      - NO_PROXY=localhost,127.0.0.1,bigmodel.cn,.bigmodel.cn
+```
 
-> 详细技术栈与版本说明参见 [开发指南](./docs/DEVELOPMENT.md#技术栈)。
+然后 `docker compose up -d` 重启生效。
 
-## 🤝 参与贡献
+### 方式 B · docker run
 
-欢迎以任何形式参与贡献：
+```bash
+docker pull ghcr.io/weisunit/zlib-reader:latest
 
-- 🐛 [提交 Bug](https://github.com/cropflre/nowen-reader/issues)
-- 💡 [发起 Discussion](https://github.com/cropflre/nowen-reader/discussions)
-- 🔧 提交 Pull Request
-- 🌐 国际化翻译
-- 📖 完善文档
+docker run -d --name zlib-reader --restart unless-stopped -p 6680:3000 \
+  -e DATABASE_URL=/data/nowen-reader.db -e COMICS_DIR=/app/comics \
+  -e NOVELS_DIR=/app/novels -e DATA_DIR=/app/.cache -e PORT=3000 \
+  -v $PWD/data:/data -v $PWD/comics:/app/comics \
+  -v $PWD/novels:/app/novels -v $PWD/cache:/app/.cache \
+  ghcr.io/weisunit/zlib-reader:latest
+```
 
-详细开发流程参见 [开发指南](./docs/DEVELOPMENT.md)。
+### 方式 C · 本地构建
 
-## ⭐ Star History
+```bash
+git clone https://github.com/weisunit/zlib-reader.git && cd zlib-reader
+docker build -t zlib-reader:latest .
+docker tag zlib-reader:latest ghcr.io/weisunit/zlib-reader:latest
+docker compose up -d --no-build
 
-如果这个项目对你有帮助，欢迎点一个 Star ⭐ 支持一下！
+# 3. 打开 http://localhost:6680 → 注册管理员（首个用户自动成为管理员）
+# 4. 设置 → Z-Library → 连接：填入 Z-Library 账号（或浏览器 remix 令牌）
+# 5. 搜索页搜书 → 点「入库」→ 任务中心看进度 → 书库阅读
+```
 
-[![Star History Chart](https://api.star-history.com/svg?repos=cropflre/nowen-reader&type=Date)](https://star-history.com/#cropflre/nowen-reader&Date)
+> 详细部署（NAS/反代/子路径）与配置说明见 [docs/INSTALL.md](./docs/INSTALL.md)、
+> [docs/CONFIGURATION.md](./docs/CONFIGURATION.md)。
+> 中国大陆网络环境提示：Z-Library 访问通常需要代理，容器已支持 `HTTPS_PROXY` 环境变量。
 
-## 📮 联系方式
+## Z-Library 插件架构（上游升级友好）
 
-- 🐛 Bug / 功能建议：[GitHub Issues](https://github.com/cropflre/nowen-reader/issues) / [Discussions](https://github.com/cropflre/nowen-reader/discussions)
-- 💬 QQ 交流群：**1093473044**
-- 📢 微信公众号：**Nowen 开源实验室**
+所有 Z-Library 相关代码以**自包含模块**组织，对上游的修改压缩到个位数行级接线点：
 
-## 💖 赞赏与交流
+| 层 | 位置 | 上游修改 |
+| --- | --- | --- |
+| 适配层 | `internal/zlibrary/`（纯新增） | 无 |
+| 业务层 | `internal/zlibrary/service/`（纯新增） | 无 |
+| 存储 | `internal/store/zlibrary_store.go` + `migrate_zlibrary_plugin.go`（纯新增） | 无（迁移独立注册） |
+| HTTP | `internal/handler/zlibrary_handler.go` + `routes_zlibrary.go`（纯新增） | 无 |
+| 接线 | `router.go` +1 行、`main.go` +2 行 | 唯一后端侵入 |
+| 前端 | `app/zlibrary/`、`components/zlibrary/`、`api/`、`hooks/`（纯新增） | 无 |
+| 前端接线 | `main.tsx`/`DesktopSidebar`/`DashboardTopBar`/`settings` 各 5 处 `// s-library:` 标记 | 已标注 |
 
-如果 Nowen Reader（弄文阅读）对你有帮助，欢迎通过支付宝或微信赞赏支持项目持续维护。也欢迎关注微信公众号「Nowen 开源实验室」或加入 QQ 群交流使用体验、反馈问题和新功能建议。
+升级手册（含逐点核对清单）：[docs/PLUGIN.md](./docs/PLUGIN.md)。
 
-<table>
-  <tr>
-    <td align="center" width="50%"><b>支付宝赞赏</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-note/main/frontend/src/assets/sponsor/zhifubao.png" alt="支付宝赞赏码" width="240"></td>
-    <td align="center" width="50%"><b>微信赞赏</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-note/main/frontend/src/assets/sponsor/weixin.jpg" alt="微信赞赏码" width="240"></td>
-  </tr>
-  <tr>
-    <td align="center"><b>微信公众号 · Nowen 开源实验室</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-video/main/docs/assets/branding/nowen-open-lab-wechat.jpg" alt="微信公众号 · Nowen 开源实验室" width="240"></td>
-    <td align="center"><b>QQ 交流群 · 1093473044</b><br><br><img src="https://raw.githubusercontent.com/cropflre/nowen-note/main/frontend/src/assets/feedback/qq-group.jpg" alt="Nowen QQ 交流群二维码" width="240"></td>
-  </tr>
-</table>
+## 开发
 
-> 赞赏完全自愿，不影响项目的免费开源使用。感谢每一位支持 Nowen 开源项目的朋友 ❤️
+```bash
+# 后端
+go build ./... && go test ./...
 
-## 📄 开源协议
+# 前端（源码在 frontend/，构建产物经 scripts/copy-dist.mjs 拷入 web/dist 供 go:embed）
+cd frontend && npm install && npm run build:all && npm run lint
 
-本项目采用 [GNU General Public License v3.0](./LICENSE)（GPL-3.0）开源协议发布。基于本项目的派生作品在对外分发时必须同样以 GPL-3.0 协议开源，并保留原作者版权声明与许可证全文。
+# 本地联调跑服务（前端已构建入 embed）
+GOPROXY=https://goproxy.cn,direct go run ./cmd/server
+```
+
+## 目录结构（新增部分）
+
+```
+internal/zlibrary/            # eapi 适配层（域名容灾/认证/搜索/下载/加解密）
+internal/zlibrary/service/    # 任务队列/流水线/配额/去重/设置
+internal/handler/zlibrary_*   # HTTP 层（12 端点）
+internal/store/zlibrary_*     # 三张表 CRUD + 独立迁移注册
+frontend/src/app/zlibrary/    # 搜索页
+frontend/src/components/zlibrary/  # 结果卡/详情抽屉/任务中心/设置面板
+docs/PLUGIN.md                # 插件架构与上游升级手册
+```
+
+## 协议与致谢
+
+- 本项目遵循 **GPL-3.0** 协议开源，完整文本见 [LICENSE](./LICENSE)
+- 上游项目 [NowenReader](https://github.com/cropflre/nowen-reader)（&#169; Nowen 开源实验室）——
+  本项目全部核心能力的基础，致敬
+- Z-Library 社区的 eapi 逆向文档与工具：
+  [baroxyton/zlibrary-eapi-documentation](https://github.com/baroxyton/zlibrary-eapi-documentation)、
+  [heartleo/zlib](https://github.com/heartleo/zlib)、
+  [bipinkrish/Zlibrary-API](https://github.com/bipinkrish/Zlibrary-API)
+
+## Star History
+
+如果这个项目对你有帮助，欢迎给上游 [NowenReader](https://github.com/cropflre/nowen-reader) 点 Star——
+本项目的每一行代码都站在它的肩膀上。

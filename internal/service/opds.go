@@ -181,9 +181,9 @@ func GenerateRootCatalog(baseURL string) string {
 		XMLNS:   opdsNS,
 		OPDS:    opdsCatalogNS,
 		ID:      root,
-		Title:   "NowenReader Comics",
+		Title:   "ZlibReader Comics",
 		Updated: now,
-		Author:  &atomAuthor{Name: "NowenReader", URI: baseURL},
+		Author:  &atomAuthor{Name: "ZlibReader", URI: baseURL},
 		Links: []atomLink{
 			{Rel: "self", Href: root, Type: OPDSNavigationMIME},
 			{Rel: "start", Href: root, Type: OPDSNavigationMIME},
@@ -310,7 +310,7 @@ func generateGroupNavigationFeed(opts opdsGroupNavigationFeedOptions) string {
 		ID:           opts.FeedID,
 		Title:        opts.Title,
 		Updated:      now,
-		Author:       &atomAuthor{Name: "NowenReader", URI: opts.BaseURL},
+		Author:       &atomAuthor{Name: "ZlibReader", URI: opts.BaseURL},
 		TotalResults: &total,
 		ItemsPerPage: &itemsPerPage,
 		StartIndex:   &startIndex,
@@ -329,8 +329,8 @@ func generateGroupNavigationFeed(opts opdsGroupNavigationFeedOptions) string {
 func GenerateOpenSearchDescription(baseURL string) string {
 	description := openSearchDescription{
 		XMLNS:         openSearchNS,
-		ShortName:     "NowenReader",
-		Description:   "Search the NowenReader comic catalog",
+		ShortName:     "ZlibReader",
+		Description:   "Search the ZlibReader comic catalog",
 		InputEncoding: "UTF-8",
 		URL: openSearchURL{
 			Type:     OPDSAcquisitionMIME,
@@ -436,7 +436,7 @@ func GenerateAcquisitionFeed(opts OPDSAcquisitionFeedOptions) string {
 		ID:           opts.FeedID,
 		Title:        opts.Title,
 		Updated:      now,
-		Author:       &atomAuthor{Name: "NowenReader", URI: opts.BaseURL},
+		Author:       &atomAuthor{Name: "ZlibReader", URI: opts.BaseURL},
 		TotalResults: &total,
 		ItemsPerPage: &itemsPerPage,
 		StartIndex:   &startIndex,

@@ -1,6 +1,6 @@
 {
-  "name": "NowenReader",
-  "short_name": "NowenReader",
+  "name": "ZlibReader",
+  "short_name": "ZlibReader",
   "description": "A modern local comic management and reading tool",
   "start_url": "/",
   "display": "standalone",

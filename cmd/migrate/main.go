@@ -61,7 +61,7 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println(`NowenReader Database Migration Tool
+	fmt.Println(`ZlibReader Database Migration Tool
 
 Usage:
   nowen-migrate [flags]

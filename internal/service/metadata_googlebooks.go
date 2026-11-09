@@ -26,7 +26,7 @@ func SearchGoogleBooks(query, lang string) []ComicMetadata {
 
 	u := fmt.Sprintf("%s?%s", googleBooksAPI, params.Encode())
 	resp, err := httpGet(u, map[string]string{
-		"User-Agent": "NowenReader/1.0",
+		"User-Agent": "ZlibReader/1.0",
 	}, 15*time.Second)
 	if err != nil {
 		log.Printf("[metadata] Google Books search failed: %v", err)

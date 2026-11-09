@@ -70,7 +70,7 @@ func OPDSAuthRequired() gin.HandlerFunc {
 			}
 		}
 
-		c.Header("WWW-Authenticate", `Basic realm="Nowen Reader OPDS", charset="UTF-8"`)
+		c.Header("WWW-Authenticate", `Basic realm="ZlibReader OPDS", charset="UTF-8"`)
 		c.Header("Cache-Control", "private, no-store")
 		c.Header("Vary", "Authorization, Cookie")
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
