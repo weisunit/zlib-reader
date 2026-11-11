@@ -59,6 +59,7 @@ func DefaultQueue() *Queue {
 // 由 cmd/server/main.go 在迁移完成后显式调用（架构 §8-3）。
 func StartQueue() *Queue {
 	defaultQueueOnce.Do(func() {
+		EnsureNovelLibraryForBootstrap() // s-library: 首启引导——保证存在小说书库（EPUB 入库前置）
 		q := &Queue{
 			cancels: map[int64]context.CancelFunc{},
 			wake:    make(chan struct{}, 1),

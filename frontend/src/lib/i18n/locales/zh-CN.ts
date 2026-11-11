@@ -1547,6 +1547,21 @@ autoDetect: "智能合集",
         // s-library: 辅助词条（重复域名提示，表格外补充）
         duplicate: "该域名已存在",
       },
+      assist: {
+        title: "下载通道（浏览器辅助通行）",
+        configured: "已配置",
+        notConfigured: "未配置",
+        hint: "下载链接受上游反爬保护（绑定浏览器指纹）。在浏览器登录 Z-Library 后，把其 Cookie 串和 UA 填到这里，服务端会代为出示通行证。要求 NAS 与你的浏览器使用同一出口网络。",
+        cookieLabel: "浏览器 Cookie 串（document.cookie 全文）",
+        cookieSavedPlaceholder: "已保存——留空则保留现有通行证，重新粘贴可更新",
+        cookiePlaceholder: "bsrv=…; c_token=…; remix_userkey=…; remix_userid=…",
+        cookieHow: "获取：浏览器打开 Z-Library → F12 → Console 输入 document.cookie 回车",
+        uaLabel: "浏览器 User-Agent（Console 输入 navigator.userAgent）",
+        save: "保存通行证",
+        clear: "清除",
+        saved: "通行证已保存",
+        cleared: "通行证已清除",
+      },
       download: {
         concurrency: "下载并发数",
         defaultLibrary: "默认目标书库",
@@ -3034,6 +3049,21 @@ export interface Translations {
         personal: string;
         dragHint: string;
         duplicate: string;
+      };
+      assist: {
+        title: string;
+        configured: string;
+        notConfigured: string;
+        hint: string;
+        cookieLabel: string;
+        cookieSavedPlaceholder: string;
+        cookiePlaceholder: string;
+        cookieHow: string;
+        uaLabel: string;
+        save: string;
+        clear: string;
+        saved: string;
+        cleared: string;
       };
       download: {
         concurrency: string;

@@ -128,6 +128,12 @@ export interface ZSettingsPayload {
     defaultLibraryId: string;
     allowScope: ZAllowScope;
   };
+  /** s-library: 浏览器辅助通行（下载通道）。cookieString 空=保留已存；clear=true 显式清除 */
+  browserAssist?: {
+    cookieString?: string;
+    userAgent?: string;
+    clear?: boolean;
+  };
 }
 
 // ============================================================
@@ -238,6 +244,8 @@ export async function fetchZLibraryStatus(signal?: AbortSignal): Promise<ZLibrar
  */
 export interface ZSettingsSnapshot extends ZSettingsPayload {
   hasCredentials?: boolean;
+  /** s-library: cookie 串不回传，仅回显配置状态 + UA */
+  browserAssist?: { configured?: boolean; userAgent?: string };
 }
 
 export async function fetchZLibrarySettings(): Promise<ZSettingsSnapshot> {

@@ -389,8 +389,9 @@ func (s *Settings) Connected() bool {
 // 纯客户端无法通过；用户浏览器与服务器走同一代理出口 IP 时，
 // 可借用浏览器的完整 Cookie 串 + 真实 UA，由服务端代为出示。
 type BrowserAssist struct {
-	CookieString string `json:"cookieString"`
+	CookieString string `json:"cookieString"` // 空 = 保留已存通行证
 	UserAgent    string `json:"userAgent"`
+	Clear        bool   `json:"clear,omitempty"` // true = 显式清除
 }
 
 // GetBrowserAssist 读取浏览器辅助通行配置。
@@ -402,7 +403,15 @@ func (s *Settings) GetBrowserAssist() BrowserAssist {
 
 // SaveBrowserAssist 保存浏览器辅助通行配置。
 func (s *Settings) SaveBrowserAssist(b BrowserAssist) error {
-	raw, err := json.Marshal(b)
+	// s-library: 语义单点——Clear=true 显式清除；cookieString 为空 = 保留已存通行证（支持只更新 UA）
+	if b.Clear {
+		b = BrowserAssist{}
+	} else if b.CookieString == "" {
+		if existing := s.GetBrowserAssist().CookieString; existing != "" {
+			b.CookieString = existing
+		}
+	}
+	raw, err := json.Marshal(BrowserAssist{CookieString: b.CookieString, UserAgent: b.UserAgent})
 	if err != nil {
 		return err
 	}

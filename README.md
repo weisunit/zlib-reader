@@ -118,6 +118,24 @@ docker build -t zlib-reader:latest .
 docker tag zlib-reader:latest ghcr.io/weisunit/zlib-reader:latest
 docker compose up -d --no-build
 
+### NAS（群晖）部署要点
+
+群晖实测经验（v1.0.1 起已内置引导，以下仍建议照做）：
+
+```bash
+# 1. 群晖 docker 不会自动创建 bind mount 目录，先手动建（否则 up 失败）
+sudo mkdir -p /volume1/docker/zlib-reader/{data,comics,novels,cache}
+cd /volume1/docker/zlib-reader
+# 2. 下载 compose（群晖 sshd 默认无 SFTP，scp 记得加 -O）
+sudo curl -L -o docker-compose.yml https://raw.githubusercontent.com/weisunit/zlib-reader/main/docker-compose.yml
+# 3. 群晖的 docker 需要 sudo，且容器路径用全量二进制
+sudo /usr/local/bin/docker-compose up -d
+```
+
+- 首个注册用户自动成为管理员；应用首启会**自动创建「小说书库」**（上游默认只建漫画库，ZlibReader 引导补齐）
+- 出站代理：在 NAS 上创建 `docker-compose.override.yml`（模板见「方式 A」代理说明），代理地址须为 **NAS 可达**的地址
+- 下载被反爬拦截时：设置 → Z-Library → 下载通道，粘贴浏览器 Cookie 串与 User-Agent（获取方法见界面提示）
+
 # 3. 打开 http://localhost:6680 → 注册管理员（首个用户自动成为管理员）
 # 4. 设置 → Z-Library → 连接：填入 Z-Library 账号（或浏览器 remix 令牌）
 # 5. 搜索页搜书 → 点「入库」→ 任务中心看进度 → 书库阅读

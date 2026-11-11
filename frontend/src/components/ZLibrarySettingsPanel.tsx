@@ -81,6 +81,11 @@ export default function ZLibrarySettingsPanel() {
   const [loading, setLoading] = useState(true);
   const [domains, setDomains] = useState<DomainDraft[]>([]);
   const [behavior, setBehavior] = useState<BehaviorDraft>({ concurrency: 1, defaultLibraryId: "", allowScope: "admin" });
+  // s-library: 浏览器辅助通行（下载通道）——cookie 写入专用（不回显），UA 可回显编辑
+  const [assistConfigured, setAssistConfigured] = useState(false);
+  const [assistUa, setAssistUa] = useState("");
+  const [assistCookie, setAssistCookie] = useState("");
+  const [assistSaving, setAssistSaving] = useState(false);
   const [saving, setSaving] = useState(false);
   const [libraries, setLibraries] = useState<Library[]>([]);
 
@@ -128,6 +133,9 @@ export default function ZLibrarySettingsPanel() {
         allowScope: data.behavior?.allowScope ?? "admin",
       });
       setHasCredentials(data.hasCredentials === true);
+      // s-library: browserAssist 回显（cookie 不回传）
+      setAssistConfigured(data.browserAssist?.configured === true);
+      setAssistUa(data.browserAssist?.userAgent ?? "");
     } catch {
       // 降级：从 /status 的域名健康数据推导域名列表（域名列表在契约 (1) 中可见）；
       // behavior（并发/默认书库/权限档）无法回显，保持默认值——待后端 GET /settings 就绪后恢复。
@@ -230,6 +238,14 @@ export default function ZLibrarySettingsPanel() {
         domains: domains.map((d) => ({ url: d.url, enabled: d.enabled, isDefault: d.isDefault })),
         behavior,
       });
+      // s-library: 同步保存浏览器辅助通行（随 handleSave 一并提交；空 cookie=保留已存）
+      if (assistUa.trim() || assistCookie.trim() || assistConfigured) {
+        await saveZLibrarySettings({
+          domains: domains.map((d) => ({ url: d.url, enabled: d.enabled, isDefault: d.isDefault })),
+          behavior,
+          browserAssist: { cookieString: assistCookie.trim(), userAgent: assistUa.trim() },
+        });
+      }
       toast.success(z.settings.saved);
       refreshStatus();
     } catch (err) {
@@ -642,6 +658,101 @@ export default function ZLibrarySettingsPanel() {
                 </select>
                 <span className="mt-1 block text-[11px] leading-snug text-muted">{z.settings.download.defaultLibraryHint}</span>
               </label>
+            </div>
+
+            {/* s-library: 下载通道——浏览器辅助通行（Cookie 串 + UA，DiamWall/CF 拦截时自助注入） */}
+            <div className="mt-4 rounded-xl border border-border/60 bg-card/40 p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-xs font-semibold text-foreground">{z.settings.assist.title}</span>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                    assistConfigured ? "bg-success/10 text-success" : "bg-card text-muted"
+                  }`}
+                >
+                  {assistConfigured ? z.settings.assist.configured : z.settings.assist.notConfigured}
+                </span>
+              </div>
+              <p className="mb-3 text-[11px] leading-relaxed text-muted">{z.settings.assist.hint}</p>
+              <label className="block">
+                <span className="mb-1 block text-xs text-muted">{z.settings.assist.cookieLabel}</span>
+                <textarea
+                  value={assistCookie}
+                  onChange={(e) => setAssistCookie(e.target.value)}
+                  rows={3}
+                  placeholder={
+                    assistConfigured ? z.settings.assist.cookieSavedPlaceholder : z.settings.assist.cookiePlaceholder
+                  }
+                  className="w-full resize-y rounded-xl border border-border bg-card px-3 py-2 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-muted/60 focus:border-accent/50 focus:ring-2 focus:ring-accent/20"
+                />
+                <span className="mt-1 block text-[10px] text-muted/70">{z.settings.assist.cookieHow}</span>
+              </label>
+              <label className="mt-3 block">
+                <span className="mb-1 block text-xs text-muted">{z.settings.assist.uaLabel}</span>
+                <input
+                  type="text"
+                  value={assistUa}
+                  onChange={(e) => setAssistUa(e.target.value)}
+                  placeholder="Mozilla/5.0 ..."
+                  className="w-full rounded-xl border border-border bg-card px-3 py-2 font-mono text-xs text-foreground outline-none transition-colors placeholder:text-muted/60 focus:border-accent/50 focus:ring-2 focus:ring-accent/20"
+                />
+              </label>
+              <div className="mt-3 flex gap-2">
+                <button
+                  type="button"
+                  disabled={assistSaving}
+                  onClick={async () => {
+                    setAssistSaving(true);
+                    try {
+                      await saveZLibrarySettings({
+                        domains: domains.map((d) => ({ url: d.url, enabled: d.enabled, isDefault: d.isDefault })),
+                        behavior,
+                        browserAssist: {
+                          cookieString: assistCookie.trim(),
+                          userAgent: assistUa.trim(),
+                          clear: assistConfigured && !assistCookie.trim(),
+                        },
+                      });
+                      setAssistConfigured(assistCookie.trim() !== "");
+                      setAssistCookie("");
+                      toast.success(z.settings.assist.saved);
+                    } catch (err) {
+                      toast.error(zErrorText(z, err).text);
+                    } finally {
+                      setAssistSaving(false);
+                    }
+                  }}
+                  className="rounded-xl bg-accent px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-50"
+                >
+                  {z.settings.assist.save}
+                </button>
+                {assistConfigured && (
+                  <button
+                    type="button"
+                    disabled={assistSaving}
+                    onClick={async () => {
+                      setAssistSaving(true);
+                      try {
+                        await saveZLibrarySettings({
+                          domains: domains.map((d) => ({ url: d.url, enabled: d.enabled, isDefault: d.isDefault })),
+                          behavior,
+                          browserAssist: { clear: true },
+                        });
+                        setAssistConfigured(false);
+                        setAssistUa("");
+                        setAssistCookie("");
+                        toast.success(z.settings.assist.cleared);
+                      } catch (err) {
+                        toast.error(zErrorText(z, err).text);
+                      } finally {
+                        setAssistSaving(false);
+                      }
+                    }}
+                    className="rounded-xl border border-danger/40 px-3 py-2 text-xs font-medium text-danger transition-colors hover:bg-danger/10 disabled:opacity-50"
+                  >
+                    {z.settings.assist.clear}
+                  </button>
+                )}
+              </div>
             </div>
           </SectionCard>
 

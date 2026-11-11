@@ -184,8 +184,9 @@ func ZlibrarySaveSettings(c *gin.Context) {
 			AllowScope       *string            `json:"allowScope"`
 		} `json:"behavior"`
 		BrowserAssist *struct { // s-library: 浏览器辅助通行（完整 cookie 串 + 真实 UA）
-			CookieString string `json:"cookieString"`
+			CookieString string `json:"cookieString"` // 空 = 保留已存通行证（配合只更新 UA 的场景）
 			UserAgent    string `json:"userAgent"`
+			Clear        bool   `json:"clear"` // true = 显式清除通行证
 		} `json:"browserAssist"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -200,11 +201,12 @@ func ZlibrarySaveSettings(c *gin.Context) {
 			return
 		}
 	}
-	// s-library: 浏览器辅助通行（Cloudflare 下载通道）
+	// s-library: 浏览器辅助通行——保留/清除语义在 service 层单点实现（SaveBrowserAssist）
 	if req.BrowserAssist != nil {
 		if err := s.SaveBrowserAssist(zlibservice.BrowserAssist{
 			CookieString: strings.TrimSpace(req.BrowserAssist.CookieString),
 			UserAgent:    strings.TrimSpace(req.BrowserAssist.UserAgent),
+			Clear:        req.BrowserAssist.Clear,
 		}); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "保存浏览器辅助配置失败"})
 			return
