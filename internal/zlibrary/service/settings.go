@@ -3,6 +3,8 @@
 package zlibservice
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -74,6 +76,8 @@ type Settings struct {
 	domains   []DomainEntry
 	// s-library: 浏览器辅助通行（cf_clearance + UA，下载通道用）
 	browserAssist BrowserAssist
+	// s-library: 通行证自动同步令牌
+	assistSyncToken string
 }
 
 var (
@@ -426,6 +430,51 @@ func (s *Settings) SaveBrowserAssist(b BrowserAssist) error {
 		s.client.SetBrowserAssist(b.CookieString, b.UserAgent)
 	}
 	return nil
+}
+
+// GetAssistSyncToken s-library: 通行证自动同步令牌（懒生成持久化）。
+// 浏览器侧（书签脚本/油猴）凭此令牌调用 assist-sync 端点上传通行证。
+func (s *Settings) GetAssistSyncToken() string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.assistSyncToken != "" {
+		return s.assistSyncToken
+	}
+	tok, err := store.GetZlibrarySetting(store.ZlibSettingKeyAssistSyncTok)
+	if err == nil && tok != "" {
+		s.assistSyncToken = tok
+		return tok
+	}
+	// 生成 32 位 hex
+	raw := make([]byte, 16)
+	if _, err := rand.Read(raw); err != nil {
+		log.Printf("[ZLIBRARY] 生成同步令牌失败: %v", err)
+		return ""
+	}
+	tok = hex.EncodeToString(raw)
+	if err := store.SetZlibrarySetting(store.ZlibSettingKeyAssistSyncTok, tok); err != nil {
+		log.Printf("[ZLIBRARY] 持久化同步令牌失败: %v", err)
+		return ""
+	}
+	s.assistSyncToken = tok
+	log.Printf("[ZLIBRARY] 已生成通行证同步令牌")
+	return tok
+}
+
+// ResetAssistSyncToken 重置同步令牌（旧令牌立即失效）。
+func (s *Settings) ResetAssistSyncToken() (string, error) {
+	raw := make([]byte, 16)
+	if _, err := rand.Read(raw); err != nil {
+		return "", err
+	}
+	tok := hex.EncodeToString(raw)
+	if err := store.SetZlibrarySetting(store.ZlibSettingKeyAssistSyncTok, tok); err != nil {
+		return "", err
+	}
+	s.mu.Lock()
+	s.assistSyncToken = tok
+	s.mu.Unlock()
+	return tok, nil
 }
 
 // PersonalDomain 最近一次看到的个人下载域名。

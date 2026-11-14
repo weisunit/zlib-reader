@@ -1561,6 +1561,15 @@ autoDetect: "智能合集",
         clear: "清除",
         saved: "通行证已保存",
         cleared: "通行证已清除",
+        autoTitle: "自动同步（免手动）",
+        autoHint: "安装下方油猴脚本（Tampermonkey）后，每次浏览 Z-Library 都会自动把最新通行证同步到 ZlibReader——通行证过期将自动续期，无需手动复制。",
+        tokenLabel: "同步令牌",
+        copy: "复制",
+        copied: "已复制",
+        reset: "重置令牌",
+        resetOk: "令牌已重置（旧令牌立即失效）",
+        showScript: "查看油猴脚本",
+        hideScript: "收起油猴脚本"
       },
       download: {
         concurrency: "下载并发数",
@@ -3064,6 +3073,15 @@ export interface Translations {
         clear: string;
         saved: string;
         cleared: string;
+        autoTitle: string;
+        autoHint: string;
+        tokenLabel: string;
+        copy: string;
+        copied: string;
+        reset: string;
+        resetOk: string;
+        showScript: string;
+        hideScript: string;
       };
       download: {
         concurrency: string;

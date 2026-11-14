@@ -4,6 +4,7 @@
 package handler
 
 import (
+	"crypto/subtle"
 	"io"
 	"net/http"
 	"net/url"
@@ -171,6 +172,8 @@ func ZlibraryGetSettings(c *gin.Context) {
 			"configured": s.GetBrowserAssist().CookieString != "",
 			"userAgent":  s.GetBrowserAssist().UserAgent,
 		},
+		// s-library: 通行证自动同步令牌（用于生成书签脚本/油猴脚本）
+		"assistSyncToken": s.GetAssistSyncToken(),
 	})
 }
 
@@ -821,6 +824,43 @@ func atoiOr(s string, def int) int {
 		return v
 	}
 	return def
+}
+
+// ZlibraryAssistSync s-library: 通行证自动同步端点（浏览器侧调用，令牌鉴权）。
+// 供书签脚本/油猴脚本在用户浏览 Z-Library 时自动上传最新 Cookie 串与 UA，
+// 免去手动 F12 复制。鉴权 = 设置页展示的同步令牌（独立于会话，跨域 no-cors 可用）。
+func ZlibraryAssistSync(c *gin.Context) {
+	token := strings.TrimSpace(c.Query("t"))
+	ck := strings.TrimSpace(c.Query("ck"))
+	ua := strings.TrimSpace(c.Query("ua"))
+	if token == "" || ck == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "缺少令牌或 Cookie", "code": "Z_INVALID_PARAMS"})
+		return
+	}
+	s := zlibservice.GetSettings()
+	if subtle.ConstantTimeCompare([]byte(token), []byte(s.GetAssistSyncToken())) != 1 {
+		c.JSON(http.StatusForbidden, gin.H{"error": "同步令牌无效", "code": zlibrary.CodeForbidden})
+		return
+	}
+	if err := s.SaveBrowserAssist(zlibservice.BrowserAssist{
+		CookieString: ck,
+		UserAgent:    ua,
+	}); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "同步失败"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "configured": true})
+}
+
+// ZlibraryAssistSyncReset s-library: 重置通行证同步令牌（旧令牌立即失效，admin）。
+func ZlibraryAssistSyncReset(c *gin.Context) {
+	s := zlibservice.GetSettings()
+	tok, err := s.ResetAssistSyncToken()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "重置同步令牌失败"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"assistSyncToken": tok})
 }
 
 // zCoverHostSuffixes s-library: 封面代理允许的域名后缀（防 SSRF）。

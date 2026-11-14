@@ -18,6 +18,7 @@ const (
 	ZlibSettingKeyBehavior       = "behavior"
 	ZlibSettingKeyPersonalDomain = "personalDomain"
 	ZlibSettingKeyBrowserAssist  = "browserAssist" // s-library: 浏览器辅助通行（cf_clearance + UA）
+	ZlibSettingKeyAssistSyncTok  = "assistSyncToken" // s-library: 通行证自动同步令牌（浏览器侧调用 assist-sync 的鉴权）
 	ZlibSettingKeyQuotaCache     = "quotaCache"
 )
 

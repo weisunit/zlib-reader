@@ -177,7 +177,7 @@ export class ZLibraryApiError extends Error {
   }
 }
 
-async function safeJson<T>(res: Response): Promise<T> {
+export async function safeJson<T>(res: Response): Promise<T> {
   if (!res.ok) {
     let msg = `HTTP ${res.status}`;
     let code: string | undefined;
@@ -196,7 +196,7 @@ async function safeJson<T>(res: Response): Promise<T> {
 }
 
 /** 带超时的 fetch（AbortController 合并外部 signal），参照 apiClient.ts 的超时策略；内部统一走 apiPath */
-async function fetchWithTimeout(
+export async function fetchWithTimeout(
   url: string,
   init: RequestInit = {},
   timeoutMs = 30000
@@ -218,7 +218,7 @@ async function fetchWithTimeout(
   }
 }
 
-function jsonInit(method: string, body: unknown, signal?: AbortSignal): RequestInit {
+export function jsonInit(method: string, body: unknown, signal?: AbortSignal): RequestInit {
   return {
     method,
     headers: { "Content-Type": "application/json" },
@@ -246,6 +246,8 @@ export interface ZSettingsSnapshot extends ZSettingsPayload {
   hasCredentials?: boolean;
   /** s-library: cookie 串不回传，仅回显配置状态 + UA */
   browserAssist?: { configured?: boolean; userAgent?: string };
+  /** s-library: 通行证自动同步令牌（用于生成油猴脚本） */
+  assistSyncToken?: string;
 }
 
 export async function fetchZLibrarySettings(): Promise<ZSettingsSnapshot> {

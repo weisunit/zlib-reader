@@ -214,3 +214,48 @@ func itoa(n int64) string {
 }
 
 
+
+// s-library: assist-sync 端点测试——令牌鉴权、参数校验、同步生效。
+func TestZlibraryAssistSync(t *testing.T) {
+	r := setupTestRouter(t)
+	cookie := registerAndLogin(t, r)
+
+	// 取同步令牌（GET /settings，admin 会话）
+	w := performAuthedRequest(r, "GET", "/api/zlibrary/settings", nil, cookie)
+	var snap struct {
+		AssistSyncToken string `json:"assistSyncToken"`
+		BrowserAssist   struct {
+			Configured bool `json:"configured"`
+		} `json:"browserAssist"`
+	}
+	if err := json.Unmarshal(w.Body.Bytes(), &snap); err != nil {
+		t.Fatalf("decode settings: %v", err)
+	}
+	if snap.AssistSyncToken == "" {
+		t.Fatal("settings 应回显同步令牌")
+	}
+
+	// 错误令牌 → 403
+	wr := performAuthedRequest(r, "GET", "/api/zlibrary/assist-sync?t=badtoken&ck=a=1", nil, "")
+	if wr.Code != http.StatusForbidden {
+		t.Fatalf("错误令牌应 403, got %d", wr.Code)
+	}
+	// 缺 ck → 400
+	wr = performAuthedRequest(r, "GET", "/api/zlibrary/assist-sync?t="+snap.AssistSyncToken, nil, "")
+	if wr.Code != http.StatusBadRequest {
+		t.Fatalf("缺 ck 应 400, got %d", wr.Code)
+	}
+	// 正确令牌（无会话）→ 200 且生效
+	wr = performAuthedRequest(r, "GET", "/api/zlibrary/assist-sync?t="+snap.AssistSyncToken+"&ck=bsrv=fresh&ua=UA-SYNC", nil, "")
+	if wr.Code != http.StatusOK {
+		t.Fatalf("同步应 200, got %d %s", wr.Code, wr.Body.String())
+	}
+	// 验证已生效（authed GET /settings）
+	w = performAuthedRequest(r, "GET", "/api/zlibrary/settings", nil, cookie)
+	if err := json.Unmarshal(w.Body.Bytes(), &snap); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if !snap.BrowserAssist.Configured {
+		t.Fatal("同步后 browserAssist 应为已配置")
+	}
+}

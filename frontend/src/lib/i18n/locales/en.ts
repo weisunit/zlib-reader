@@ -1561,6 +1561,15 @@ const en: Translations = {
         clear: "Clear",
         saved: "Pass saved",
         cleared: "Pass cleared",
+        autoTitle: "Auto sync (hands-free)",
+        autoHint: "Install the userscript below (Tampermonkey). Every visit to Z-Library will sync the freshest pass to ZlibReader automatically — expired passes renew themselves, no manual copying.",
+        tokenLabel: "Sync token",
+        copy: "Copy",
+        copied: "Copied",
+        reset: "Reset token",
+        resetOk: "Token reset (old one invalidated)",
+        showScript: "Show userscript",
+        hideScript: "Hide userscript"
       },
       download: {
         concurrency: "Concurrent downloads",

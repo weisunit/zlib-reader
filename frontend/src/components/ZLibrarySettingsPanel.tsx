@@ -16,6 +16,7 @@ import {
   Unplug,
 } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { fetchWithTimeout, jsonInit, safeJson } from "@/api/zlibrary"; // s-library
 import { useToast } from "@/components/Toast";
 import { useZLibraryStatus, invalidateZLibraryStatus } from "@/hooks/useZLibraryStatus";
 import QuotaBadge from "@/components/zlibrary/QuotaBadge";
@@ -86,6 +87,9 @@ export default function ZLibrarySettingsPanel() {
   const [assistUa, setAssistUa] = useState("");
   const [assistCookie, setAssistCookie] = useState("");
   const [assistSaving, setAssistSaving] = useState(false);
+  // s-library: 通行证自动同步——令牌 + 油猴脚本
+  const [assistSyncToken, setAssistSyncToken] = useState("");
+  const [showAssistScript, setShowAssistScript] = useState(false);
   const [saving, setSaving] = useState(false);
   const [libraries, setLibraries] = useState<Library[]>([]);
 
@@ -136,6 +140,7 @@ export default function ZLibrarySettingsPanel() {
       // s-library: browserAssist 回显（cookie 不回传）
       setAssistConfigured(data.browserAssist?.configured === true);
       setAssistUa(data.browserAssist?.userAgent ?? "");
+      setAssistSyncToken(data.assistSyncToken ?? "");
     } catch {
       // 降级：从 /status 的域名健康数据推导域名列表（域名列表在契约 (1) 中可见）；
       // behavior（并发/默认书库/权限档）无法回显，保持默认值——待后端 GET /settings 就绪后恢复。
@@ -751,6 +756,85 @@ export default function ZLibrarySettingsPanel() {
                   >
                     {z.settings.assist.clear}
                   </button>
+                )}
+              </div>
+
+              {/* s-library: 自动同步——令牌 + 油猴脚本（浏览器侧自动上传通行证） */}
+              <div className="mt-4 border-t border-border/60 pt-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-foreground">{z.settings.assist.autoTitle}</span>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const res = await fetchWithTimeout("/api/zlibrary/assist-sync/reset", jsonInit("POST", {}));
+                        const data = await safeJson<{ assistSyncToken: string }>(res);
+                        setAssistSyncToken(data.assistSyncToken);
+                        toast.success(z.settings.assist.resetOk);
+                      } catch (err) {
+                        toast.error(zErrorText(z, err).text);
+                      }
+                    }}
+                    className="text-[11px] text-muted hover:text-foreground"
+                  >
+                    {z.settings.assist.reset}
+                  </button>
+                </div>
+                <p className="mb-2 text-[11px] leading-relaxed text-muted">{z.settings.assist.autoHint}</p>
+                <label className="block">
+                  <span className="mb-1 block text-xs text-muted">{z.settings.assist.tokenLabel}</span>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      readOnly
+                      value={assistSyncToken}
+                      className="min-w-0 flex-1 rounded-xl border border-border bg-card px-3 py-2 font-mono text-xs text-foreground"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(assistSyncToken).then(() => toast.success(z.settings.assist.copied));
+                      }}
+                      className="shrink-0 rounded-xl border border-border px-3 py-2 text-xs text-muted transition-colors hover:text-foreground"
+                    >
+                      {z.settings.assist.copy}
+                    </button>
+                  </div>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowAssistScript((v) => !v)}
+                  className="mt-3 text-[11px] text-accent hover:underline"
+                >
+                  {showAssistScript ? z.settings.assist.hideScript : z.settings.assist.showScript}
+                </button>
+                {showAssistScript && (
+                  <textarea
+                    readOnly
+                    rows={12}
+                    value={`// ==UserScript==
+// @name         ZlibReader 通行证自动同步
+// @match        *://z-lib.by/*
+// @match        *://z-lib.sk/*
+// @match        *://z-lib.fm/*
+// @match        *://1lib.sk/*
+// @grant        GM_xmlhttpRequest
+// @connect      ${window.location.host}
+// ==/UserScript==
+(function () {
+  "use strict";
+  const EP = "${window.location.origin}/api/zlibrary/assist-sync?t=${assistSyncToken}";
+  const send = () =>
+    GM_xmlhttpRequest({
+      method: "GET",
+      url: EP + "&ck=" + encodeURIComponent(document.cookie) + "&ua=" + encodeURIComponent(navigator.userAgent),
+      onload: (r) => console.log("[ZlibReader] 通行证同步:", r.status),
+    });
+  send();
+  setInterval(send, 30 * 60 * 1000);
+})();`}
+                    className="mt-2 w-full resize-y rounded-xl border border-border bg-card px-3 py-2 font-mono text-[11px] leading-relaxed text-foreground"
+                  />
                 )}
               </div>
             </div>

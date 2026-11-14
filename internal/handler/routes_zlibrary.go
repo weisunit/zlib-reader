@@ -33,6 +33,9 @@ func ZlibraryAccessRequired() gin.HandlerFunc {
 
 // registerZlibraryRoutes 挂载 /api/zlibrary 路由组（由 router.go.SetupRoutes 调用）。
 func registerZlibraryRoutes(api *gin.RouterGroup) {
+	// s-library: 通行证自动同步端点——浏览器侧脚本调用，令牌即鉴权（不走会话）
+	api.GET("/zlibrary/assist-sync", ZlibraryAssistSync)
+
 	g := api.Group("/zlibrary")
 	g.Use(middleware.AuthRequired())
 
@@ -44,6 +47,7 @@ func registerZlibraryRoutes(api *gin.RouterGroup) {
 
 	// 配置类端点：恒为 admin（FR-10.1）
 	g.GET("/settings", middleware.AdminRequired(), ZlibraryGetSettings) // s-library: DEF-1 修复——配置回显
+	g.POST("/assist-sync/reset", middleware.AdminRequired(), ZlibraryAssistSyncReset) // s-library: 重置同步令牌
 	g.PUT("/settings", middleware.AdminRequired(), ZlibrarySaveSettings)
 	g.POST("/auth/test", middleware.AdminRequired(), ZlibraryTestAuth)
 	g.DELETE("/auth", middleware.AdminRequired(), ZlibraryDisconnectAuth)
