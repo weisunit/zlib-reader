@@ -1,8 +1,15 @@
 name: Release Docker & Android
 
+# s-library: 上游 DockerHub+Android 发布流水线——依赖上游 secrets，fork 中禁用自动触发
+# （如需恢复：去掉下面 workflow_dispatch 的注释并恢复 push.tags 触发）
 on:
-  push:
-    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version, e.g. 1.2.4 or 1.2.4-rc.1'
+        required: true
+        type: string
+      build_number:
   workflow_dispatch:
     inputs:
       version:
