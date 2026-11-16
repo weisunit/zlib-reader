@@ -818,6 +818,8 @@ export default function ZLibrarySettingsPanel() {
 // @match        *://z-lib.sk/*
 // @match        *://z-lib.fm/*
 // @match        *://1lib.sk/*
+// @match        *://z101.by/*
+// @match        *://*.z101.by/*
 // @grant        GM_xmlhttpRequest
 // @connect      ${window.location.host}
 // ==/UserScript==
